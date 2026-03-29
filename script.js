@@ -134,7 +134,7 @@ const feedbackMessages = {
 
 // คลังคำถาม 25 ข้อ 
 const scenarios = [
-    { icon: "🎭", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
+    { icon: "👤", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
       options: [{ th: "ปล่อยเบลอ ขี้เกียจวุ่นวาย", en: "Ignore it, too lazy to care", score: 0 }, { th: "กดรีพอร์ตให้ปลิว แล้วแคปไปแจ้งความ", en: "Report the account and tell police", score: 10 }, { th: "ให้ปื้มพาทัวร์ไปลง ทักไปต่อว่าให้เขาลบ", en: "Let Pluem lead a mob to report them", score: 5 }]
     },
     { icon: "📱", title_th: "SMS ดูดเงิน", title_en: "Scam SMS", th: "จู่ๆ มี SMS เข้าเบอร์เราว่า 'ถอนเงินสำเร็จ 50,000 บ.' อะตอมรีบทักมายุให้รีบกดลิงก์ไปยกเลิกด่วน!", en: "Got SMS: '50k THB withdrawn.' Atom tells you to quickly click the link to cancel!",
