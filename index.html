@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Survival</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Kanit:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    <div class="digital-particles"></div>
+
+    <div class="game-container">
+        <div class="outer-frame">
+            <header>
+                <h1 id="main-title">Cyber Survival</h1>
+                <p class="subtitle" id="t-subtitle">รู้ให้ทันสื่อดิจิทัลนะวัยรุ่น</p>
+            </header>
+
+            <div class="top-bar">
+                <div class="vol-control">
+                    <span id="vol-icon" onclick="toggleMute()" style="cursor: pointer; user-select: none;" title="เปิด/ปิดเสียงเอฟเฟกต์">🔊</span>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+                </div>
+                <div style="margin-left: auto;">
+                    <button class="btn-lang" id="btn-lang">🇹🇭</button>
+                </div>
+            </div>
+
+            <div id="screen-main" class="screen">
+                <div class="sit-icon" style="font-size: 4rem; margin-bottom: 10px;">🛡️</div>
+                <p id="t-welcome" style="font-size: 1.2rem; color: #5D5651; text-align: center; margin-bottom: 20px;">พร้อมจะทดสอบสัญชาตญาณเอาตัวรอดในโลกออนไลน์ของคุณหรือยัง?</p>
+                <button class="btn-primary" onclick="btnStartClick()" id="btn-start">เริ่มเกมเลย!</button>
+            </div>
+
+            <div id="screen-gacha" class="screen" style="display: none;">
+                <div class="gacha-machine">
+                    <div class="gacha-slot">
+                        <div class="reel" id="reel1"></div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="btn-spin" onclick="btnSpinClick()">🎲 สุ่มด่าน</button>
+            </div>
+
+            <div id="screen-quiz" class="screen" style="display: none; width: 100%;">
+                <div class="stats-row">
+                    <div class="stat-item" title="เวลา">⏱️ <span id="time-val">00:00</span></div>
+                    <div class="stat-item" title="คะแนน">⭐ <span id="score">0</span></div>
+                    <div class="stat-item" title="พลังชีวิต">❤️ <span id="lives">4</span></div>
+                </div>
+                
+                <div class="quiz-box">
+                    <div id="sit-icon-container" class="sit-icon-container">
+                        <div id="sit-icon" class="sit-icon">🎭</div>
+                    </div>
+                    <h2 id="sit-desc">คำถาม...</h2>
+                    <div id="options" class="options-grid"></div>
+                </div>
+            </div>
+
+            <div id="screen-step-result" class="screen" style="display: none; text-align: center;">
+                <div id="step-icon" class="sit-icon" style="font-size: 6rem; margin-bottom: 15px;">✨</div>
+                <h2 id="step-title" style="font-family: 'Kanit'; font-size: 2.5rem; margin-bottom: 10px;">ถูกต้อง!</h2>
+                <p id="step-desc" style="font-size: 1.3rem; color: #5D5651; padding: 0 15px; min-height: 60px;">ข้อความลูกเล่น...</p>
+                <button class="btn-primary" id="btn-next-step" onclick="btnNextStepClick()" style="margin-top: 20px; font-size: 1.5rem;">➡️ ลุยต่อ!</button>
+            </div>
+
+            <div id="screen-game-over" class="screen" style="display: none;">
+                <div class="game-over-box" id="capture-area" style="position: relative; overflow: hidden;">
+                    <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
+                    <h2 id="end-title" style="font-family: 'Kanit'; color: var(--wood-color); position: relative; z-index: 1;">MISSION ACCOMPLISHED</h2>
+                    <div class="score-board" style="position: relative; z-index: 1;">
+                        <p>📅 <span id="t-date-time">วันที่:</span> <span class="highlight" id="final-date-time">-</span></p>
+                        <p><span id="t-total-score">คะแนนรวม:</span> <span class="highlight" id="final-score">0</span></p>
+                        <p>⏱️ <span id="t-final-time">เวลาที่ใช้:</span> <span id="final-time-spent" class="highlight">00:00</span></p>
+                        <p><span id="t-survive-rate">อัตราการรอด:</span> <span class="highlight" id="final-percent">0%</span></p>
+                    </div>
+                    <div class="rank-box" style="position: relative; z-index: 1;">
+                        <p id="t-rank-title" style="margin: 0; font-weight: bold; color: #8A6548;">ระดับของคุณ</p>
+                        <h3 id="final-rank" style="margin: 5px 0;">👑 ระดับของคุณ</h3>
+                        <p id="final-rank-desc" style="margin: 0;">-</p>
+                    </div>
+                </div>
+                <div class="action-buttons" style="display:flex; gap:10px; width:100%; margin-top:15px;">
+                    <button class="btn-save" onclick="saveAsImage()" id="btn-save-img" style="flex:1;">📸 บันทึกรูป</button>
+                    <button class="btn-primary" onclick="btnRestartClick()" id="btn-restart" style="flex:2;">🔄 เล่นใหม่</button>
+                </div>
+            </div>  
+
+            <div class="progress-container">
+                <div id="t-progress" style="text-align:center; font-weight:bold; margin-bottom:5px;">ด่านที่ 1/10</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

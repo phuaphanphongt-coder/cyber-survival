@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Itim&display=swap');
+
+:root {
+    --bg-color: #F8F1E9;
+    --primary-color: #D8A47F;
+    --accent-color: #C08B7A;
+    --text-color: #5D5651;
+    --wood-color: #B28461;
+}
+
+* { 
+    box-sizing: border-box; 
+    font-family: 'Itim', cursive; 
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s; 
+}
+
+body { 
+    background: linear-gradient(-45deg, #E6D5C3, #F2E3D5, #D8A47F, #EEDCC6);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite; 
+    
+    display: flex; 
+    justify-content: center; 
+    /* ลบ align-items: center; ออก เพื่อไม่ให้หัวโดนตัดเวลาจอมือถือเล็กมากๆ */
+    min-height: 100vh; 
+    margin: 0; 
+    
+    overflow-x: hidden; /* ล็อคแค่แนวนอน ไม่ให้เลื่อนซ้ายขวา */
+    overflow-y: auto;   /* เปิดให้เลื่อนขึ้นลงได้ในกรณีที่จอเล็กจริงๆ */
+}
+
+.cyber-grid {
+    position: fixed;
+    bottom: -20%; left: -50%; width: 200%; height: 120vh;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+    background-size: 50px 50px;
+    transform-origin: bottom center;
+    transform: perspective(600px) rotateX(60deg);
+    animation: gridMove 3s linear infinite;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.digital-particles {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.6) 2px, transparent 2px);
+    background-size: 80px 80px;
+    animation: floatUp 15s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 0 50px; } }
+@keyframes floatUp { 0% { transform: translateY(0); } 100% { transform: translateY(-80px); } }
+
+.game-container { 
+    width: 100%; 
+    max-width: 450px; 
+    padding: 15px; 
+    margin: auto; /* ใช้ margin: auto เพื่อให้อยู่กึ่งกลางเสมอแทน */
+}
+
+.outer-frame {
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    border: 6px solid #FFFFFF; 
+    border-radius: 35px;
+    box-shadow: 0 15px 35px rgba(178, 132, 97, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.9);
+    padding: 30px 20px;
+}
+
+header { text-align: center; margin-bottom: 20px; }
+#main-title { font-family: 'Kanit', sans-serif; font-size: 2.5rem; color: var(--wood-color); margin: 0; text-transform: uppercase; letter-spacing: 2px; text-shadow: 2px 2px 0px #FFF, 4px 4px 0px rgba(0,0,0,0.1); }
+.subtitle { font-size: 1.2rem; color: var(--accent-color); margin: 5px 0 0 0; font-weight: bold; }
+
+.top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px 15px; border-radius: 20px; margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+.vol-control { display: flex; align-items: center; gap: 6px; }
+input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color); }
+.btn-lang { background: var(--wood-color); color: white; border: none; padding: 6px 14px; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: 'Kanit'; }
+
+.screen { display: flex; flex-direction: column; align-items: center; min-height: 280px; }
+
+.stats-row {
+    display: flex; justify-content: space-around; align-items: center; width: 100%;
+    background: #FFFFFF; padding: 12px; border-radius: 30px;
+    border: 2px solid #E6D5C3; margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.stat-item { font-weight: bold; color: var(--wood-color); font-size: 1.1rem; display: flex; align-items: center; gap: 5px; }
+
+.gacha-machine { 
+    background: var(--accent-color); padding: 20px; border-radius: 20px; display: flex; 
+    margin: 20px 0; box-shadow: inset 0 5px 15px rgba(0,0,0,0.2), 0 8px 0px #8B6151, 0 15px 15px rgba(0,0,0,0.3); 
+    width: 100%;
+}
+.gacha-slot { 
+    width: 100%; height: 140px; background: var(--bg-color); border-radius: 10px; 
+    border: 5px solid var(--wood-color); overflow: hidden; position: relative; 
+    box-shadow: inset 0 8px 15px rgba(0,0,0,0.15); 
+}
+.gacha-slot::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
+}
+.reel { display: flex; flex-direction: column; }
+.reel-item { 
+    width: 100%; height: 140px; display: flex; justify-content: center; align-items: center; 
+    font-size: 1.1rem; padding: 10px 20px; text-align: center; color: var(--text-color); font-family: 'Kanit', sans-serif;
+}
+
+.quiz-box { width: 100%; text-align: center; }
+.sit-icon-container { width: 80px; height: 80px; background: #FFF; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 3px solid var(--primary-color); }
+.sit-icon { font-size: 3rem; line-height: 1; }
+@keyframes pulsingGlow { 0% { box-shadow: 0 0 0 0 rgba(216, 164, 127, 0.7); } 100% { box-shadow: 0 0 0 15px rgba(216, 164, 127, 0); } }
+#sit-desc { font-size: 1.3rem; margin-bottom: 20px; color: var(--text-color); line-height: 1.4; }
+
+.options-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+.btn-option { 
+    background: #FFFFFF; color: var(--text-color); border: 3px solid var(--primary-color);
+    border-radius: 20px; padding: 15px; font-size: 1.15rem; font-weight: bold; width: 100%; text-align: left; 
+    cursor: pointer; box-shadow: 0 6px 0px var(--primary-color); transition: all 0.1s ease-in-out; 
+}
+.btn-option:hover { background: var(--primary-color); color: #FFFFFF; transform: translateY(-2px); box-shadow: 0 8px 0px var(--wood-color); }
+.btn-option:active { transform: translateY(6px); box-shadow: 0 0px 0px var(--wood-color); }
+.btn-option.correct { background: #8A9782 !important; color: white !important; border-color: #677260 !important; box-shadow: 0 0px 0px #677260 !important; }
+.btn-option.wrong { background: #C08B7A !important; color: white !important; border-color: #A06B5A !important; box-shadow: 0 0px 0px #A06B5A !important; }
+.btn-option:disabled { cursor: not-allowed; opacity: 0.8; }
+
+.progress-container { margin-top: 25px; }
+.progress-bar-bg { width: 100%; background-color: #EEDCC6; border-radius: 15px; height: 15px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); width: 0%; transition: width 0.5s ease-out; }
+
+.fade-in-slow { animation: fadeIn 0.8s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.bounce-fade { animation: bounceFade 1.5s forwards; }
+@keyframes bounceFade { 0% { transform: scale(1); opacity: 1; } 20% { transform: scale(1.05); } 50% { transform: scale(0); opacity: 0; } 100% { transform: scale(0); opacity: 0; display: none; } }
+
+.highlight { color: var(--wood-color); font-size: 1.4rem; font-weight: bold; background: #F8F1E9; padding: 2px 10px; border-radius: 10px; display: inline-block; text-shadow: 0 4px 5px rgba(0,0,0,0.1); }
+
+.btn-primary { background: var(--accent-color); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-size: 1.3rem; cursor: pointer; box-shadow: 0 6px 0px #A06B5A; margin-top: 15px; }
+.btn-primary:hover { transform: scale(1.05) translateY(-5px); }
+.btn-primary:active { transform: translateY(3px); box-shadow: 0 0px 0px #A06B5A;}
+
+.btn-save { background: #8A9782; color: white; border: none; padding: 15px; border-radius: 20px; cursor: pointer; box-shadow: 0 5px 0px #677260; font-size: 1.1rem;}
+.btn-save:active { transform: translateY(3px); box-shadow: 0 0px 0px #677260;}
+
+.game-over-box { background: #FFF; border: 4px solid var(--wood-color); border-radius: 25px; padding: 20px; width: 100%; text-align: center; }
+.score-board p { font-size: 1.2rem; margin: 8px 0; color: #5D5651; }
+.rank-box { background: #F8F1E9; border-radius: 15px; padding: 15px; margin-top: 15px; border: 2px dashed var(--primary-color); }
