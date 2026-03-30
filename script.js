@@ -208,7 +208,6 @@ const scenarios = [
       options: [{ th: "กดอนุญาตไปเลย อยากได้เงินด่วน", en: "Allow access immediately, need the money!", score: 0 }, { th: "หยุดเลย! แอปเถื่อนแน่ๆ เดี๋ยวโดนดูดข้อมูลไปโทรทวงประจาน", en: "Stop! Illegal app will steal contacts to harass them.", score: 10 }, { th: "โหลดแอปมาดูเฉยๆ แต่ยังไม่กดยืนยัน", en: "Download just to see, but don't confirm anything", score: 5 }]
     }
 ];
-
 // === 2. GAME STATE ===
 let currentLevel = 1;
 const MAX_LEVEL = 10; 
@@ -222,10 +221,12 @@ let currentFeedbackType = null;
 let currentFeedbackIndex = 0;   
 let gameEndTime = null; 
 
-// ตัวแปรสำหรับจับเวลาถอยหลังแต่ละข้อ
+// 🌟 ตัวแปรจับเวลาแบบความแม่นยำสูง
 let questionTimer;
-let timeRemaining = 15;
-const TIME_LIMIT = 15;
+let endTime = 0;
+const TIME_LIMIT_MS = 15000; // 15 วินาทีในหน่วยมิลลิวินาที
+let isTimeOut = false; // ตัวเช็คว่าหมดเวลาหรือยัง
+let currentDisplaySeconds = 15; // เอาไว้เก็บเลขโชว์ตอนเปลี่ยนภาษา
 
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -294,7 +295,7 @@ function updateLanguageUI() {
     const endTitle = document.getElementById('end-title');
     if (endTitle) endTitle.innerText = (rate >= 50 && lives > 0) ? dict.endTitleWin : dict.endTitleLose;
 
-   const rank = document.getElementById('final-rank');
+    const rank = document.getElementById('final-rank');
     const rd = document.getElementById('final-rank-desc');
     if (rank && rd) {
         if (rate >= 80) {
@@ -338,7 +339,8 @@ function updateLanguageUI() {
         if (stepIcon.innerText === "✨") {
             stepTitle.innerText = currentLang === 'th' ? "ถูกต้อง!" : "Correct!";
         } else if (stepIcon.innerText === "❌") {
-            if (timeRemaining <= 0) {
+            // เช็คตัวแปร isTimeOut ที่ตั้งใหม่
+            if (isTimeOut) {
                 stepTitle.innerText = currentLang === 'th' ? "หมดเวลา!" : "Time's Up!";
             } else {
                 stepTitle.innerText = currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!";
@@ -350,10 +352,9 @@ function updateLanguageUI() {
         }
     }
 
-    // อัปเดตตัวหนังสือในแถบเวลาถ้ากดเปลี่ยนภาษา
     const textTimer = document.getElementById('countdown-text');
     if (textTimer) {
-        textTimer.innerText = timeRemaining + (currentLang === 'th' ? ' วินาที' : ' sec');
+        textTimer.innerText = currentDisplaySeconds + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
 
     if (gameEndTime) {
@@ -458,23 +459,30 @@ function btnSpinClick() {
     }, (duration * 1000) + 1000); 
 }
 
-// 🌟 อัปเดต UI แถบเวลาและตัวเลขที่เพิ่มเข้ามา
-function updateTimerUI() {
+// 🌟 ฟังก์ชันคำนวณหลอดเวลาแบบเรียลไทม์ (เนียนตาและเป๊ะสุดๆ)
+function updateTimerUI(timeLeftMs) {
     const bar = document.getElementById('countdown-bar');
     const text = document.getElementById('countdown-text');
     
+    // ปัดเศษวินาทีให้แสดง 15, 14, 13 ...
+    currentDisplaySeconds = Math.ceil(timeLeftMs / 1000);
+    if (currentDisplaySeconds < 0) currentDisplaySeconds = 0;
+
     if (bar) {
-        const percent = (timeRemaining / TIME_LIMIT) * 100;
-        bar.style.width = percent + '%';
-        if (timeRemaining > 5) {
-            bar.style.backgroundColor = '#8A9782'; // สีเขียวตอนเวลาปกติ
+        // คำนวณความยาวหลอดเป็นเปอร์เซ็นต์แบบละเอียด
+        const percent = (timeLeftMs / TIME_LIMIT_MS) * 100;
+        bar.style.width = Math.max(0, percent) + '%';
+        
+        // เปลี่ยนสีหลอดตอน 5 วินาทีสุดท้าย
+        if (currentDisplaySeconds > 5) {
+            bar.style.backgroundColor = '#8A9782'; 
         } else {
-            bar.style.backgroundColor = '#C08B7A'; // สีแดงเตือนตอนใกล้หมดเวลา
+            bar.style.backgroundColor = '#C08B7A'; 
         }
     }
     
     if (text) {
-        text.innerText = timeRemaining + (currentLang === 'th' ? ' วินาที' : ' sec');
+        text.innerText = currentDisplaySeconds + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
 }
 
@@ -502,23 +510,30 @@ function loadQuestion() {
         optContainer.appendChild(btn);
     });
 
-    // 🌟 เริ่มระบบจับเวลา
+    // 🌟 เริ่มระบบจับเวลาแบบความแม่นยำสูง
     clearInterval(questionTimer);
-    timeRemaining = TIME_LIMIT;
-    updateTimerUI();
+    isTimeOut = false; // รีเซ็ตสถานะเวลา
+    endTime = Date.now() + TIME_LIMIT_MS; // สร้างจุดจบที่ 15 วินาทีเป๊ะๆ จากเวลาเครื่อง
     
+    updateTimerUI(TIME_LIMIT_MS);
+    
+    // อัปเดตทุกๆ 30 มิลลิวินาที (ทำงานเหมือนเกมเฟรมเรตสูงๆ)
     questionTimer = setInterval(() => {
-        timeRemaining--;
-        updateTimerUI();
-        if (timeRemaining <= 0) {
+        let timeLeftMs = endTime - Date.now(); // ดึงเวลาจริงมาเทียบ
+        
+        if (timeLeftMs <= 0) {
             clearInterval(questionTimer);
-            handleAnswer(null, 0); // หมดเวลาถือว่าตอบผิด ได้ 0 คะแนน
+            updateTimerUI(0); // ล็อกหลอดให้หยุดที่ 0 พอดิบพอดี
+            isTimeOut = true; 
+            handleAnswer(null, 0); // หมดเวลา
+        } else {
+            updateTimerUI(timeLeftMs); // ขยับหลอดตามเวลาเป๊ะๆ
         }
-    }, 1000);
+    }, 30);
 }
 
 function handleAnswer(btn, score) {
-    clearInterval(questionTimer); // หยุดเวลาทันทีที่กดตอบ
+    clearInterval(questionTimer); 
     
     const allBtns = document.querySelectorAll('.btn-option');
     allBtns.forEach(b => b.disabled = true); 
@@ -564,7 +579,7 @@ function showStepResult(isCorrect) {
         title.style.color = "#8A9782";
     } else {
         icon.innerText = "❌";
-        if (timeRemaining <= 0) {
+        if (isTimeOut) {
             title.innerText = (currentLang === 'th' ? "หมดเวลา!" : "Time's Up!");
         } else {
             title.innerText = (currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!");
