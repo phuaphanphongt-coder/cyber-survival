@@ -18,15 +18,10 @@ body {
     background: linear-gradient(-45deg, #E6D5C3, #F2E3D5, #D8A47F, #EEDCC6);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite; 
-    
-    display: flex; 
-    justify-content: center; 
-    /* ลบ align-items: center; ออก เพื่อไม่ให้หัวโดนตัดเวลาจอมือถือเล็กมากๆ */
-    min-height: 100vh; 
-    margin: 0; 
-    
-    overflow-x: hidden; /* ล็อคแค่แนวนอน ไม่ให้เลื่อนซ้ายขวา */
-    overflow-y: auto;   /* เปิดให้เลื่อนขึ้นลงได้ในกรณีที่จอเล็กจริงๆ */
+    display: flex; justify-content: center; min-height: 100vh; margin: 0; 
+    /* เปิดให้เลื่อนขึ้นลงได้ถ้ายาวเกินจอมือถือ */
+    overflow-x: hidden; 
+    overflow-y: auto; 
 }
 
 .cyber-grid {
@@ -58,12 +53,8 @@ body {
 @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 0 50px; } }
 @keyframes floatUp { 0% { transform: translateY(0); } 100% { transform: translateY(-80px); } }
 
-.game-container { 
-    width: 100%; 
-    max-width: 450px; 
-    padding: 15px; 
-    margin: auto; /* ใช้ margin: auto เพื่อให้อยู่กึ่งกลางเสมอแทน */
-}
+/* ใช้ margin: auto ให้อยู่กึ่งกลางเสมอแม้ย่อจอ */
+.game-container { width: 100%; max-width: 450px; padding: 15px; margin: auto; position: relative; z-index: 1; }
 
 .outer-frame {
     background: rgba(255, 255, 255, 0.85); 
@@ -126,6 +117,23 @@ input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color
 @keyframes pulsingGlow { 0% { box-shadow: 0 0 0 0 rgba(216, 164, 127, 0.7); } 100% { box-shadow: 0 0 0 15px rgba(216, 164, 127, 0); } }
 #sit-desc { font-size: 1.3rem; margin-bottom: 20px; color: var(--text-color); line-height: 1.4; }
 
+/* CSS สำหรับแถบเวลานับถอยหลัง */
+#countdown-bar-container {
+    width: 100%;
+    height: 12px;
+    background-color: #EEDCC6;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+#countdown-bar {
+    height: 100%;
+    width: 100%;
+    background-color: #8A9782;
+    transition: width 1s linear, background-color 1s;
+}
+
 .options-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
 .btn-option { 
@@ -160,3 +168,20 @@ input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color
 .game-over-box { background: #FFF; border: 4px solid var(--wood-color); border-radius: 25px; padding: 20px; width: 100%; text-align: center; }
 .score-board p { font-size: 1.2rem; margin: 8px 0; color: #5D5651; }
 .rank-box { background: #F8F1E9; border-radius: 15px; padding: 15px; margin-top: 15px; border: 2px dashed var(--primary-color); }
+
+/* =========================================
+   📱 โหมดสำหรับจอมือถือ (Responsive)
+   ========================================= */
+@media (max-width: 480px) {
+    .outer-frame {
+        padding: 20px 15px;
+        border-width: 4px;
+        border-radius: 25px; 
+    }
+    header h1 { font-size: 2.1rem; }
+    .subtitle { font-size: 1rem; }
+    .btn-primary { padding: 12px 30px; font-size: 1.1rem; }
+    .sit-icon-container { width: 65px; height: 65px; }
+    .sit-icon { font-size: 2.5rem; }
+    .btn-option { font-size: 1.05rem; padding: 12px; }
+}
