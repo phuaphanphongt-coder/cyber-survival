@@ -78,9 +78,9 @@ function playSound(type) {
 // === 1. DATA & LANGUAGES ===
 const uiDict = {
     th: {
-        subtitle: "เตือนแล้วนะ! โลกออนไลน์มันเหลี่ยมเยอะ", welcome: "พร้อมวัดสกิลเอาตัวรอดจากพวกมิจฯ หรือยัง?",
-        startBtn: "ลุยเลย รออะไร!", spinBtn: "🎲 สุ่มด่านที่ ", scoreLabel: "แต้มบุญ: ",
-        progress: "ด่านที่ ", endTitleWin: "SURVIVED! รอดแล้วพวกเรา", endTitleLose: "WASTED! โดนตกซะงั้น",
+        subtitle: "เตือนแล้วนะ! โลกออนไลน์มันเหลี่ยมเยอะ", welcome: "พร้อมวัดสกิลเอาตัวรอดจากพวกมิจจี้แล้วยัง?",
+        startBtn: "ลุยเลย รออะไร!", spinBtn: "🎲 สุ่มข้อที่ ", scoreLabel: "แต้ม: ",
+        progress: "ข้อที่ ", endTitleWin: "SURVIVED! รอดแล้วพวกเรา", endTitleLose: "WASTED! โดนตกซะงั้น",
         nextBtn: "➡️ ไปต่ออย่าแผ่ว!", finishBtn: "📊 ดูผลสรุป", 
         dateTime: "วันที่:", totalScore: "คะแนนรวม:", timeSpent: "เวลาที่ใช้:", surviveRate: "อัตราการรอด:",
         rankTitle: "สเตตัสความขลังของคุณ", btnSave: "📸 เซฟรูปอวดเพื่อน", btnRestart: "🔄 ขอแก้มืออีกรอบ"
@@ -98,38 +98,39 @@ const uiDict = {
 const feedbackMessages = {
     th: {
         correct: [
-            "เฉียบ! มิจฉาชีพถึงกับกำหมัดไปฟ้องปื้มแล้ว 😡", 
-            "ตาไวเกิน! ขนาดคิวยังอึ้ง 🛡️", 
-            "ตึงจัด! เล่นเอามิจฯ ไปไม่เป็นเลย 😎", 
-            "สมองทองคำ! อะตอมยังต้องมาขอวิชา 🧠",
-            "อย่างเอา! ฟิล์มยกนิ้วให้เลยช็อตนี้ 🤸‍♂️"
+            "เฉียบ! มิจจี้ถึงกับกำหมัด 😡", 
+            "ตาไวเกิน! 🛡️", 
+            "ตึงจัด! เล่นเอามิจจี้ไปไม่เป็นเลย 😎", 
+            "สมองระดับโหดเลยพี่ 🧠",
+            "อย่างเอาเลยพี่🤸‍♂️"
         ],
         wrong: [
-            "อ้าวเฮ้ย! โดนตกซะงั้น เคนขำก๊ากแล้ว 🎣", 
-            "มิจฯ ยิ้มกริ่มเลยงานนี้ ปันเริ่มกำหมัดละนะ 😈", 
-            "ใจเย็นๆ! อ่านดีๆ ก่อนกดสิ 🧐", 
-            "พลาดไปหนึ่ง! ฟิล์มส่ายหัวเลย 💔",
-            "เรียบร้อย โรงเรียนมิจฯ อะตอมกุมขมับละ 💸"
+            "อ้าวเฮ้ย! โดนตกซะงั้น  🎣", 
+            "มิจจี้ยิ้มกริ่มเลยงานนี้ กำหมัดละนะ 😈", 
+            "ใจเย็นๆ อ่านดีๆก่อนกดสิ 🧐", 
+            "พลาดไปหนึ่ง! 💔",
+            "เรียบร้อย มิจจี้กุมขมับละ 💸"
         ]
     },
     en: {
         correct: [
-            "Nice one! Scammers are crying to Pluem right now 😡", 
-            "Sharp eyes! Even Q is amazed 🛡️", 
+            "Nice one! Scammers are crying right now 😡", 
+            "Sharp eyes! 🛡️", 
             "Too good! Scammers got nothing on you 😎", 
-            "Galaxy brain! Atom wants to learn from you 🧠",
-            "Awesome! Film gives you a thumbs up 🤸‍♂️"
+            "Galaxy brain!  🧠",
+            "Awesome!🤸‍♂️"
         ],
         wrong: [
-            "Bruh! You just got baited, Ken is laughing 🎣", 
-            "Scammers are smirking. Pun is clenching his fists 😈", 
+            "Bruh! You just got baited 🎣", 
+            "Scammers are smirking 😈", 
             "Chill! Read carefully before you click 🧐", 
-            "Wasted! Film is shaking her head 💔",
-            "RIP. You fell right into it, Atom is facepalming 💸"
+            "Wasted! 💔",
+            "RIP. You fell right into it 💸"
         ]
     }
 };
 
+// คลังคำถาม 25 ข้อ 
 const scenarios = [
     { icon: "🎭", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
       options: [{ th: "ปล่อยเบลอ ขี้เกียจวุ่นวาย", en: "Ignore it, too lazy to care", score: 0 }, { th: "กดรีพอร์ตให้ปลิว แล้วแคปไปแจ้งความ", en: "Report the account and tell police", score: 10 }, { th: "ให้ปื้มพาทัวร์ไปลง ทักไปต่อว่าให้เขาลบ", en: "Let Pluem lead a mob to report them", score: 5 }]
@@ -299,13 +300,13 @@ function updateLanguageUI() {
     const rd = document.getElementById('final-rank-desc');
     if (rank && rd) {
         if (rate >= 80) {
-            rank.innerText = currentLang === 'th' ? "👑 ตัวตึงไซเบอร์" : "👑 Cyber God";
-            rd.innerText = currentLang === 'th' ? "มิจฉาชีพยังต้องเรียกพี่! เหลี่ยมมาเหลี่ยมกลับไม่โกง" : "Scammers bow to you!";
+            rank.innerText = currentLang === 'th' ? "👑 มิจจี้ทำอะไรไม่ได้" : "👑 Scammers is crying";
+            rd.innerText = currentLang === 'th' ? "มิจจี้ยังต้องเรียกพี่! เหลี่ยมมาเหลี่ยมกลับไม่โกง" : "Scammers bow to you!";
         } else if (rate >= 50) {
-            rank.innerText = currentLang === 'th' ? "🛡️ คนจริงเอาตัวรอดเก่ง" : "🛡️ Guardian";
-            rd.innerText = currentLang === 'th' ? "สติแกร่งใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
+            rank.innerText = currentLang === 'th' ? "🛡️ คนจริงเอาตัวรอดเก่ง" : "🛡️ Good head";
+            rd.innerText = currentLang === 'th' ? "สติดีใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
         } else {
-            rank.innerText = currentLang === 'th' ? "💸 หมูตู้ (ATM เคลื่อนที่)" : "💸 Walking ATM";
+            rank.innerText = currentLang === 'th' ? "💸 หมูแห้ง" : "💸 Skinny pig";
             rd.innerText = currentLang === 'th' ? "ระวังหน่อยนะ เป็นเหยื่อชั้นดีของพวกมิจฯ เลย" : "Be careful! You're an easy target.";
         }
     }
