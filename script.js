@@ -2,7 +2,6 @@
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 
-// ตัวแปรเสียงเอฟเฟกต์ (ลำโพงซ้าย)
 let masterVolume = 0.5; 
 let previousVolume = 0.5; 
 
@@ -11,7 +10,6 @@ let currentLang = 'th';
 const externalFailSound = new Audio('fail.mp3'); 
 const externalFireworkSound = new Audio('firework.mp3'); 
 
-// 🔊 ระบบปุ่มและสไลเดอร์ของเสียงเอฟเฟกต์
 function toggleMute() {
     const volIcon = document.getElementById('vol-icon');
     const volSlider = document.getElementById('volumeSlider');
@@ -80,9 +78,9 @@ function playSound(type) {
 // === 1. DATA & LANGUAGES ===
 const uiDict = {
     th: {
-        subtitle: "เตือนแล้วนะ! โลกออนไลน์มันเหลี่ยมเยอะ", welcome: "พร้อมวัดสกิลเอาตัวรอดจากพวกมิจจี้แล้วยัง?",
-        startBtn: "ลุยเลย รออะไร!", spinBtn: "🎲 สุ่มข้อที่ ", scoreLabel: "แต้ม: ",
-        progress: "ข้อที่ ", endTitleWin: "SURVIVED! รอดแล้วพวกเรา", endTitleLose: "WASTED! โดนตกซะงั้น",
+        subtitle: "เตือนแล้วนะ! โลกออนไลน์มันเหลี่ยมเยอะ", welcome: "พร้อมวัดสกิลเอาตัวรอดจากพวกมิจฯ หรือยัง?",
+        startBtn: "ลุยเลย รออะไร!", spinBtn: "🎲 สุ่มด่านที่ ", scoreLabel: "แต้มบุญ: ",
+        progress: "ด่านที่ ", endTitleWin: "SURVIVED! รอดแล้วพวกเรา", endTitleLose: "WASTED! โดนตกซะงั้น",
         nextBtn: "➡️ ไปต่ออย่าแผ่ว!", finishBtn: "📊 ดูผลสรุป", 
         dateTime: "วันที่:", totalScore: "คะแนนรวม:", timeSpent: "เวลาที่ใช้:", surviveRate: "อัตราการรอด:",
         rankTitle: "สเตตัสความขลังของคุณ", btnSave: "📸 เซฟรูปอวดเพื่อน", btnRestart: "🔄 ขอแก้มืออีกรอบ"
@@ -100,41 +98,41 @@ const uiDict = {
 const feedbackMessages = {
     th: {
         correct: [
-            "เฉียบ! มิจจี้ถึงกับกำหมัด 😡", 
-            "ตาไวเกิน! 🛡️", 
-            "ตึงจัด! เล่นเอามิจจี้ไปไม่เป็นเลย 😎", 
-            "สมองระดับโหดเลยพี่ 🧠",
-            "อย่างเอาเลยพี่🤸‍♂️"
+            "เฉียบ! มิจฉาชีพถึงกับกำหมัดไปฟ้องปื้มแล้ว 😡", 
+            "ตาไวเกิน! ขนาดคิวยังอึ้ง 🛡️", 
+            "ตึงจัด! เล่นเอามิจฯ ไปไม่เป็นเลย 😎", 
+            "สมองทองคำ! อะตอมยังต้องมาขอวิชา 🧠",
+            "อย่างเอา! ฟิล์มยกนิ้วให้เลยช็อตนี้ 🤸‍♂️"
         ],
         wrong: [
-            "อ้าวเฮ้ย! โดนตกซะงั้น  🎣", 
-            "มิจจี้ยิ้มกริ่มเลยงานนี้ กำหมัดละนะ 😈", 
-            "ใจเย็นๆ อ่านดีๆก่อนกดสิ 🧐", 
-            "พลาดไปหนึ่ง! 💔",
-            "เรียบร้อย มิจจี้กุมขมับละ 💸"
+            "อ้าวเฮ้ย! โดนตกซะงั้น เคนขำก๊ากแล้ว 🎣", 
+            "มิจฯ ยิ้มกริ่มเลยงานนี้ ปันเริ่มกำหมัดละนะ 😈", 
+            "ใจเย็นๆ! อ่านดีๆ ก่อนกดสิ 🧐", 
+            "พลาดไปหนึ่ง! ฟิล์มส่ายหัวเลย 💔",
+            "เรียบร้อย โรงเรียนมิจฯ อะตอมกุมขมับละ 💸"
         ]
     },
     en: {
         correct: [
-            "Nice one! Scammers are crying right now 😡", 
-            "Sharp eyes! 🛡️", 
+            "Nice one! Scammers are crying to Pluem right now 😡", 
+            "Sharp eyes! Even Q is amazed 🛡️", 
             "Too good! Scammers got nothing on you 😎", 
-            "Galaxy brain!  🧠",
-            "Awesome!🤸‍♂️"
+            "Galaxy brain! Atom wants to learn from you 🧠",
+            "Awesome! Film gives you a thumbs up 🤸‍♂️"
         ],
         wrong: [
-            "Bruh! You just got baited 🎣", 
-            "Scammers are smirking 😈", 
+            "Bruh! You just got baited, Ken is laughing 🎣", 
+            "Scammers are smirking. Pun is clenching his fists 😈", 
             "Chill! Read carefully before you click 🧐", 
-            "Wasted! 💔",
-            "RIP. You fell right into it 💸"
+            "Wasted! Film is shaking her head 💔",
+            "RIP. You fell right into it, Atom is facepalming 💸"
         ]
     }
 };
 
-// คลังคำถาม 25 ข้อ 
+// คลังคำถาม 25 ข้อ
 const scenarios = [
-    { icon: "👤", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
+    { icon: "🎭", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
       options: [{ th: "ปล่อยเบลอ ขี้เกียจวุ่นวาย", en: "Ignore it, too lazy to care", score: 0 }, { th: "กดรีพอร์ตให้ปลิว แล้วแคปไปแจ้งความ", en: "Report the account and tell police", score: 10 }, { th: "ให้ปื้มพาทัวร์ไปลง ทักไปต่อว่าให้เขาลบ", en: "Let Pluem lead a mob to report them", score: 5 }]
     },
     { icon: "📱", title_th: "SMS ดูดเงิน", title_en: "Scam SMS", th: "จู่ๆ มี SMS เข้าเบอร์เราว่า 'ถอนเงินสำเร็จ 50,000 บ.' อะตอมรีบทักมายุให้รีบกดลิงก์ไปยกเลิกด่วน!", en: "Got SMS: '50k THB withdrawn.' Atom tells you to quickly click the link to cancel!",
@@ -222,6 +220,12 @@ let totalTimer;
 let isTransitioning = false; 
 let currentFeedbackType = null; 
 let currentFeedbackIndex = 0;   
+let gameEndTime = null; 
+
+// ตัวแปรสำหรับจับเวลาถอยหลังแต่ละข้อ
+let questionTimer;
+let timeRemaining = 15;
+const TIME_LIMIT = 15;
 
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -294,18 +298,17 @@ function updateLanguageUI() {
     const rd = document.getElementById('final-rank-desc');
     if (rank && rd) {
         if (rate >= 80) {
-            rank.innerText = currentLang === 'th' ? "👑 มิจจี้ทำอะไรไม่ได้" : "👑 Scammers is crying";
-            rd.innerText = currentLang === 'th' ? "มิจจี้ยังต้องเรียกพี่! เหลี่ยมมาเหลี่ยมกลับไม่โกง" : "Scammers bow to you!";
+            rank.innerText = currentLang === 'th' ? "👑 ตัวตึงไซเบอร์" : "👑 Cyber God";
+            rd.innerText = currentLang === 'th' ? "มิจฉาชีพยังต้องเรียกพี่! เหลี่ยมมาเหลี่ยมกลับไม่โกง" : "Scammers bow to you!";
         } else if (rate >= 50) {
-            rank.innerText = currentLang === 'th' ? "🛡️ คนจริงเอาตัวรอดเก่ง" : "🛡️ Good head";
-            rd.innerText = currentLang === 'th' ? "สติดีใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
+            rank.innerText = currentLang === 'th' ? "🛡️ คนจริงเอาตัวรอดเก่ง" : "🛡️ Guardian";
+            rd.innerText = currentLang === 'th' ? "สติแกร่งใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
         } else {
-            rank.innerText = currentLang === 'th' ? "💸 หมูแห้ง" : "💸 Skinny pig";
+            rank.innerText = currentLang === 'th' ? "💸 หมูตู้ (ATM เคลื่อนที่)" : "💸 Walking ATM";
             rd.innerText = currentLang === 'th' ? "ระวังหน่อยนะ เป็นเหยื่อชั้นดีของพวกมิจฯ เลย" : "Be careful! You're an easy target.";
         }
     }
 
-    // 💡 อัปเดตข้อความในตู้สล็อตให้เปลี่ยนตามภาษาใหม่ทันที
     document.querySelectorAll('.slot-text').forEach(el => {
         el.innerText = el.getAttribute('data-' + currentLang);
     });
@@ -335,12 +338,24 @@ function updateLanguageUI() {
         if (stepIcon.innerText === "✨") {
             stepTitle.innerText = currentLang === 'th' ? "ถูกต้อง!" : "Correct!";
         } else if (stepIcon.innerText === "❌") {
-            stepTitle.innerText = currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!";
+            // เช็คว่าหมดเวลาหรือเปล่า
+            if (timeRemaining <= 0) {
+                stepTitle.innerText = currentLang === 'th' ? "หมดเวลา!" : "Time's Up!";
+            } else {
+                stepTitle.innerText = currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!";
+            }
         }
 
         if (currentFeedbackType !== null) {
             stepDesc.innerText = feedbackMessages[currentLang][currentFeedbackType][currentFeedbackIndex];
         }
+    }
+
+    if (gameEndTime) {
+        const locale = currentLang === 'th' ? 'th-TH' : 'en-GB'; 
+        const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit' };
+        document.getElementById('final-date-time').innerText = `${gameEndTime.toLocaleDateString(locale, dateOptions)} ${gameEndTime.toLocaleTimeString(locale, timeOptions)}`;
     }
 
     updateProgress();
@@ -373,7 +388,6 @@ function updateLivesUI() {
     document.getElementById('lives').innerText = lives;
 }
 
-// สร้างตู้สล็อตตั้งต้น (โชว์ก่อนหมุนครั้งแรก)
 function initSlot() {
     const reel = document.getElementById('reel1');
     if(reel) {
@@ -439,6 +453,20 @@ function btnSpinClick() {
     }, (duration * 1000) + 1000); 
 }
 
+// อัปเดต UI แถบเวลา
+function updateTimerUI() {
+    const bar = document.getElementById('countdown-bar');
+    if (bar) {
+        const percent = (timeRemaining / TIME_LIMIT) * 100;
+        bar.style.width = percent + '%';
+        if (timeRemaining > 5) {
+            bar.style.backgroundColor = '#8A9782'; // สีเขียวตอนเวลาปกติ
+        } else {
+            bar.style.backgroundColor = '#C08B7A'; // สีแดงเตือนตอนใกล้หมดเวลา
+        }
+    }
+}
+
 function loadQuestion() {
     const q = scenarios[(currentLevel - 1) % scenarios.length];
     document.getElementById('sit-icon').innerText = q.icon;
@@ -462,9 +490,25 @@ function loadQuestion() {
         btn.onclick = () => handleAnswer(btn, opt.score);
         optContainer.appendChild(btn);
     });
+
+    // เริ่มระบบจับเวลา
+    clearInterval(questionTimer);
+    timeRemaining = TIME_LIMIT;
+    updateTimerUI();
+    
+    questionTimer = setInterval(() => {
+        timeRemaining--;
+        updateTimerUI();
+        if (timeRemaining <= 0) {
+            clearInterval(questionTimer);
+            handleAnswer(null, 0); // หมดเวลาถือว่าตอบผิด (ส่งค่าเป็น null และคะแนนเป็น 0)
+        }
+    }, 1000);
 }
 
 function handleAnswer(btn, score) {
+    clearInterval(questionTimer); // หยุดเวลาทันทีที่กดตอบ
+    
     const allBtns = document.querySelectorAll('.btn-option');
     allBtns.forEach(b => b.disabled = true); 
 
@@ -475,7 +519,6 @@ function handleAnswer(btn, score) {
         if (parseInt(b.dataset.score) === 10) b.classList.add('correct'); 
     });
 
-    // 🌟 ระบบให้คะแนนใหม่: ได้คะแนนเฉพาะตอนตอบถูก
     if (isCorrect) {
         totalScore += score; 
         playSound('correct');
@@ -510,7 +553,11 @@ function showStepResult(isCorrect) {
         title.style.color = "#8A9782";
     } else {
         icon.innerText = "❌";
-        title.innerText = (currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!");
+        if (timeRemaining <= 0) {
+            title.innerText = (currentLang === 'th' ? "หมดเวลา!" : "Time's Up!");
+        } else {
+            title.innerText = (currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!");
+        }
         title.style.color = "#C08B7A";
     }
 
@@ -577,11 +624,7 @@ function endGame() {
     clearInterval(totalTimer);
     showScreen('screen-game-over');
     
-    const now = new Date();
-    const locale = currentLang === 'th' ? 'th-TH' : 'en-GB'; 
-    const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    const timeOptions = { hour: '2-digit', minute: '2-digit' };
-    document.getElementById('final-date-time').innerText = `${now.toLocaleDateString(locale, dateOptions)} ${now.toLocaleTimeString(locale, timeOptions)}`;
+    gameEndTime = new Date(); 
 
     document.getElementById('final-score').innerText = totalScore;
     
@@ -618,4 +661,4 @@ function saveAsImage() {
 updateLanguageUI();
 updateProgress();
 updateLivesUI();
-initSlot(); // เรียกใช้ตู้สล็อตตั้งต้นตอนเริ่มเกม
+initSlot();
