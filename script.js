@@ -214,7 +214,7 @@ let currentLevel = 1;
 const MAX_LEVEL = 10; 
 let totalScore = 0;
 let isSpinning = false;
-let lives = 4;
+let lives = 4; // จำนวนหัวใจเริ่มต้น
 let totalSeconds = 0;
 let totalTimer;
 let isTransitioning = false; 
@@ -243,9 +243,7 @@ function showScreen(id) {
     document.getElementById(id).style.display = 'flex';
 }
 
-// 🌟 ปรับระบบ Transition ให้ฉลาดขึ้น ป้องกันปุ่มค้าง
 function bounceThenTransition(callback) {
-    // หาหน้าจอที่กำลังแสดงอยู่ (ไม่ว่าจะจาก CSS หรือ Inline Style)
     const screens = document.querySelectorAll('.screen');
     let activeScreen = null;
     screens.forEach(s => {
@@ -260,7 +258,6 @@ function bounceThenTransition(callback) {
             activeScreen.classList.remove('bounce-fade');
             callback();
             
-            // หาหน้าจอใหม่ที่เพิ่งถูกแสดง เพื่อใส่ Effect เฟดเข้า
             let newScreen = null;
             document.querySelectorAll('.screen').forEach(s => {
                 if (window.getComputedStyle(s).display !== 'none') {
@@ -271,7 +268,7 @@ function bounceThenTransition(callback) {
                 newScreen.classList.add('fade-in-slow');
                 setTimeout(() => { newScreen.classList.remove('fade-in-slow'); }, 800);
             }
-        }, 800); // ระยะเวลาเล่น Effect เด้งหาย
+        }, 800); 
     } else {
         callback();
     }
@@ -409,6 +406,7 @@ function btnStartClick() {
 }
 
 function updateLivesUI() {
+    // อัปเดตตัวเลขหัวใจที่แสดงบนหน้าจอให้ตรงกับที่เหลือ
     const livesEl = document.getElementById('lives');
     if(livesEl) livesEl.innerText = lives;
 }
@@ -537,7 +535,7 @@ function startQuestionTimer() {
         if (timeLeft <= 0) {
             updateTimerUI(0);
             isTimeOut = true;
-            handleAnswer(-1); 
+            handleAnswer(-1); // ส่งค่า -1 ไปแปลว่าหมดเวลา
             return;
         }
         
@@ -552,22 +550,35 @@ function handleAnswer(score) {
     if (questionTimer) cancelAnimationFrame(questionTimer);
     
     let earned = 0;
+    
+    // ถ้าตอบถูก (คะแนน=10)
     if (score === 10) {
         earned = 10;
         playSound('correct');
         currentFeedbackType = 'correct';
         document.getElementById('step-icon').innerText = "✨";
-    } else {
+    } 
+    // ถ้าตอบผิด หรือ หมดเวลา (-1)
+    else {
         playSound('wrong');
         currentFeedbackType = 'wrong';
         document.getElementById('step-icon').innerText = "❌";
+        
+        // 💔 ตอบผิด ลดหัวใจไป 1 ดวง!
+        lives--;
+        updateLivesUI();
     }
     
+    // อัปเดตคะแนนสะสม
     totalScore += earned;
+    
+    // 🌟 อัปเดตตัวเลขคะแนนที่มุมจอทันทีให้เห็นเรียลไทม์
+    const scoreEl = document.getElementById('score'); 
+    if(scoreEl) scoreEl.innerText = totalScore;
+    
     currentFeedbackIndex = Math.floor(Math.random() * feedbackMessages[currentLang][currentFeedbackType].length);
     updateLanguageUI();
 
-    // 🌟 โชว์หน้าจอแบบสมูทๆ
     bounceThenTransition(() => {
         showScreen('screen-step-result');
     });
@@ -575,7 +586,8 @@ function handleAnswer(score) {
 
 function btnNextStepClick() {
     playSound('click');
-    if (currentLevel >= MAX_LEVEL) {
+    // 💀 เช็คว่าถึงข้อสุดท้ายแล้ว หรือ "หัวใจหมด" ให้เด้งไปจบเกมทันที
+    if (currentLevel >= MAX_LEVEL || lives <= 0) {
         bounceThenTransition(() => {
             endGame();
         });
@@ -605,7 +617,7 @@ function endGame() {
     gameEndTime = new Date();
     
     const rate = Math.round((totalScore / (MAX_LEVEL * 10)) * 100);
-    const isWin = rate >= 50;
+    const isWin = rate >= 50 && lives > 0; // ต้องได้คะแนนเกินครึ่ง และหัวใจห้ามเป็น 0 ถึงจะชนะ
     
     playSound(isWin ? 'firework' : 'fail');
     
@@ -624,12 +636,21 @@ function endGame() {
 
 function btnRestartClick() {
     playSound('click');
+    
+    // รีเซ็ตค่าทุกอย่างตอนกดเล่นใหม่
     currentLevel = 1;
     totalScore = 0;
     totalSeconds = 0;
+    lives = 4; // ❤️ คืนชีพให้ 4 ดวงใหม่
     isSpinning = false;
     gameEndTime = null;
+    
     updateProgress();
+    updateLivesUI();
+    
+    // เคลียร์คะแนนบนหน้าจอให้กลับเป็น 0
+    const scoreEl = document.getElementById('score');
+    if(scoreEl) scoreEl.innerText = totalScore;
     
     bounceThenTransition(() => {
         showScreen('screen-main');
@@ -671,9 +692,14 @@ function saveAsImage() {
     });
 }
 
-// โหลดหน้าเว็บครั้งแรกให้ตั้งค่าเริ่มต้นเลย
+// โหลดหน้าเว็บครั้งแรกให้ดึงคะแนนและหัวใจตั้งต้นมาแสดงเลย
 window.onload = () => {
     updateLanguageUI();
     updateProgress();
+    
+    updateLivesUI();
+    const scoreEl = document.getElementById('score');
+    if(scoreEl) scoreEl.innerText = totalScore;
+    
     initSlot();
 };
