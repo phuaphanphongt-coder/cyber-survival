@@ -307,7 +307,7 @@ function updateLanguageUI() {
             rd.innerText = currentLang === 'th' ? "สติดีใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
         } else {
             rank.innerText = currentLang === 'th' ? "💸 หมูแห้ง" : "💸 Skinny pig";
-            rd.innerText = currentLang === 'th' ? "ระวังหน่อยนะ เป็นเหยื่อชั้นดีของพวกมิจฯ เลย" : "Be careful! You're an easy target.";
+            rd.innerText = currentLang === 'th' ? "ระวังหน่อยนะ เป็นเหยื่อชั้นดีของพวกมิจจี้เลย" : "Be careful! You're an easy target.";
         }
     }
 
@@ -340,7 +340,6 @@ function updateLanguageUI() {
         if (stepIcon.innerText === "✨") {
             stepTitle.innerText = currentLang === 'th' ? "ถูกต้อง!" : "Correct!";
         } else if (stepIcon.innerText === "❌") {
-            // เช็คตัวแปร isTimeOut ที่ตั้งใหม่
             if (isTimeOut) {
                 stepTitle.innerText = currentLang === 'th' ? "หมดเวลา!" : "Time's Up!";
             } else {
@@ -460,10 +459,10 @@ function btnSpinClick() {
     }, (duration * 1000) + 1000); 
 }
 
-// 🌟 ฟังก์ชันคำนวณหลอดเวลาแบบเรียลไทม์ (เนียนตาและเป๊ะสุดๆ)
+// 🌟 ฟังก์ชันคำนวณหลอดเวลาแบบเรียลไทม์ และอัปเดตตัวเลขด้วย
 function updateTimerUI(timeLeftMs) {
     const bar = document.getElementById('countdown-bar');
-    const text = document.getElementById('countdown-text');
+    const text = document.getElementById('countdown-text'); // ตัวแปรนี้จะวิ่งไปจับเลขบนหน้าจอ
     
     // ปัดเศษวินาทีให้แสดง 15, 14, 13 ...
     currentDisplaySeconds = Math.ceil(timeLeftMs / 1000);
@@ -482,6 +481,7 @@ function updateTimerUI(timeLeftMs) {
         }
     }
     
+    // 🌟 ตรงนี้แหละครับที่สั่งให้ตัวเลขมันขยับตามเวลาที่ลดลง!
     if (text) {
         text.innerText = currentDisplaySeconds + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
@@ -528,7 +528,7 @@ function loadQuestion() {
             isTimeOut = true; 
             handleAnswer(null, 0); // หมดเวลา
         } else {
-            updateTimerUI(timeLeftMs); // ขยับหลอดตามเวลาเป๊ะๆ
+            updateTimerUI(timeLeftMs); // ขยับหลอดและตัวเลขตามเวลาเป๊ะๆ
         }
     }, 30);
 }
