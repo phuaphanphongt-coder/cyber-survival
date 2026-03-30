@@ -338,7 +338,6 @@ function updateLanguageUI() {
         if (stepIcon.innerText === "✨") {
             stepTitle.innerText = currentLang === 'th' ? "ถูกต้อง!" : "Correct!";
         } else if (stepIcon.innerText === "❌") {
-            // เช็คว่าหมดเวลาหรือเปล่า
             if (timeRemaining <= 0) {
                 stepTitle.innerText = currentLang === 'th' ? "หมดเวลา!" : "Time's Up!";
             } else {
@@ -349,6 +348,12 @@ function updateLanguageUI() {
         if (currentFeedbackType !== null) {
             stepDesc.innerText = feedbackMessages[currentLang][currentFeedbackType][currentFeedbackIndex];
         }
+    }
+
+    // อัปเดตตัวหนังสือในแถบเวลาถ้ากดเปลี่ยนภาษา
+    const textTimer = document.getElementById('countdown-text');
+    if (textTimer) {
+        textTimer.innerText = timeRemaining + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
 
     if (gameEndTime) {
@@ -453,9 +458,11 @@ function btnSpinClick() {
     }, (duration * 1000) + 1000); 
 }
 
-// อัปเดต UI แถบเวลา
+// 🌟 อัปเดต UI แถบเวลาและตัวเลขที่เพิ่มเข้ามา
 function updateTimerUI() {
     const bar = document.getElementById('countdown-bar');
+    const text = document.getElementById('countdown-text');
+    
     if (bar) {
         const percent = (timeRemaining / TIME_LIMIT) * 100;
         bar.style.width = percent + '%';
@@ -464,6 +471,10 @@ function updateTimerUI() {
         } else {
             bar.style.backgroundColor = '#C08B7A'; // สีแดงเตือนตอนใกล้หมดเวลา
         }
+    }
+    
+    if (text) {
+        text.innerText = timeRemaining + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
 }
 
@@ -491,7 +502,7 @@ function loadQuestion() {
         optContainer.appendChild(btn);
     });
 
-    // เริ่มระบบจับเวลา
+    // 🌟 เริ่มระบบจับเวลา
     clearInterval(questionTimer);
     timeRemaining = TIME_LIMIT;
     updateTimerUI();
@@ -501,7 +512,7 @@ function loadQuestion() {
         updateTimerUI();
         if (timeRemaining <= 0) {
             clearInterval(questionTimer);
-            handleAnswer(null, 0); // หมดเวลาถือว่าตอบผิด (ส่งค่าเป็น null และคะแนนเป็น 0)
+            handleAnswer(null, 0); // หมดเวลาถือว่าตอบผิด ได้ 0 คะแนน
         }
     }, 1000);
 }
