@@ -47,41 +47,24 @@
                 <button class="btn-primary" id="btn-spin" onclick="btnSpinClick()">🎲 สุ่มด่าน</button>
             </div>
 
-            <div id="screen-quiz" class="screen" style="display: none; flex-direction: column;">
-    
-    <div class="question-box" style="text-align: center; margin-bottom: 20px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <div id="sit-icon-container" style="font-size: 3rem; margin-bottom: 10px;">
-            <span id="sit-icon">❓</span>
-        </div>
-        <p id="sit-desc" style="font-size: 1.2rem; margin: 0; color: #5D5651;">กำลังโหลดคำถาม...</p>
-    </div>
-
-    <div id="countdown-bar-container">
-        <div id="countdown-bar"></div>
-        <div id="countdown-text">15 วินาที</div>
-    </div>
-
-    <div id="options" style="display: flex; flex-direction: column; gap: 10px; width: 100%;"></div>
-    
-</div>
-                
-                <div class="quiz-box">
-                    <div id="sit-icon-container" class="sit-icon-container">
-                        <div id="sit-icon" class="sit-icon">🎭</div>
-                    </div>
-                    <h2 id="sit-desc">คำถาม...</h2>
+            <div id="screen-quiz" class="screen" style="display: none; flex-direction: column; width: 100%;">
+                <div class="quiz-box" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                     
-                    <div id="countdown-bar-container">
-                       <div style="position: relative; width: 100%; background: #e0e0e0; border-radius: 10px; height: 25px; overflow: hidden; margin-bottom: 15px;">
-    <div id="countdown-bar" style="width: 100%; height: 100%; background-color: #8A9782;"></div>
-    
-    <div id="countdown-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 10; font-size: 1.1rem; pointer-events: none;">15 วินาที</div>
-</div>
+                    <div id="sit-icon-container" class="sit-icon-container" style="text-align: center; margin-bottom: 10px;">
+                        <div id="sit-icon" class="sit-icon" style="font-size: 4rem;">🎭</div>
+                    </div>
+                    
+                    <h2 id="sit-desc" style="text-align: center; color: #5D5651; margin-bottom: 20px; width: 100%;">คำถาม...</h2>
+                    
+                    <div id="countdown-bar-container" style="position: relative; width: 100%; background: #e0e0e0; border-radius: 10px; height: 25px; margin-bottom: 20px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); overflow: hidden;">
+                        <div id="countdown-bar" style="width: 100%; height: 100%; background-color: #8A9782; border-radius: 10px;"></div>
+                        <div id="countdown-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 10; font-size: 1.1rem; pointer-events: none;">15 วินาที</div>
+                    </div>
 
-                    <div id="options" class="options-grid"></div>
+                    <div id="options" class="options-grid" style="display: flex; flex-direction: column; gap: 10px; width: 100%;"></div>
+                    
                 </div>
             </div>
-
             <div id="screen-step-result" class="screen" style="display: none; text-align: center;">
                 <div id="step-icon" class="sit-icon" style="font-size: 6rem; margin-bottom: 15px;">✨</div>
                 <h2 id="step-title" style="font-family: 'Kanit'; font-size: 2.5rem; margin-bottom: 10px;">ถูกต้อง!</h2>
