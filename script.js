@@ -538,7 +538,7 @@ function startQuestionTimer() {
 }
 
 function handleAnswer(score) {
-    // 🛑 สิ่งสำคัญที่สุด: สั่งหยุดเวลาทันทีที่ตอบ หรือเวลาหมด จะได้ไม่บั๊ก!
+    // 🛑 หยุดเวลาทันทีที่ตอบ
     if (questionTimer) cancelAnimationFrame(questionTimer);
     
     let earned = 0;
@@ -557,6 +557,20 @@ function handleAnswer(score) {
     
     // สุ่มข้อความด่า/ชม
     currentFeedbackIndex = Math.floor(Math.random() * feedbackMessages[currentLang][currentFeedbackType].length);
+    
+    updateLanguageUI();
+
+    // 🌟 เพิ่มเอฟเฟกต์ความสมูทตรงนี้แหละครับ!
+    bounceThenTransition(() => {
+        showScreen('screen-step-result');
+        // เพิ่มคลาส fade-in-slow ให้หน้าเฉลยมันค่อยๆ โผล่มาแบบหล่อๆ
+        const screenResult = document.getElementById('screen-step-result');
+        if (screenResult) {
+            screenResult.classList.add('fade-in-slow');
+            setTimeout(() => { screenResult.classList.remove('fade-in-slow'); }, 800);
+        }
+    });
+}
     
     updateLanguageUI();
     showScreen('screen-step-result');
