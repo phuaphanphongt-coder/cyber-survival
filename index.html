@@ -27,6 +27,11 @@
                     <span id="vol-icon" onclick="toggleMute()" style="cursor: pointer; user-select: none;" title="เปิด/ปิดเสียงเอฟเฟกต์">🔊</span>
                     <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
                 </div>
+                
+                <div style="display: flex; gap: 15px; align-items: center; font-size: 1.2rem; font-weight: bold; color: var(--wood-color);">
+                    <div title="พลังชีวิต">❤️ <span id="lives">4</span></div>
+                    <div title="คะแนน">⭐ <span id="score">0</span></div>
+                </div>
                 <div style="margin-left: auto;">
                     <button class="btn-lang" id="btn-lang">🇹🇭 TH</button>
                 </div>
@@ -65,6 +70,7 @@
                     
                 </div>
             </div>
+            
             <div id="screen-step-result" class="screen" style="display: none; text-align: center;">
                 <div id="step-icon" class="sit-icon" style="font-size: 6rem; margin-bottom: 15px;">✨</div>
                 <h2 id="step-title" style="font-family: 'Kanit'; font-size: 2.5rem; margin-bottom: 10px;">ถูกต้อง!</h2>
