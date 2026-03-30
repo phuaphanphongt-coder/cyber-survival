@@ -132,7 +132,9 @@ input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color
     height: 100%;
     width: 100%;
     background-color: #8A9782;
-    transition: width 1s linear, background-color 1s;
+    /* เราเอา transition ของ width ออก เพื่อให้ Javascript คุมความสมูทของหลอดเวลาแทนครับ */
+    transition: background-color 0.5s; 
+}
 }
 #countdown-text {
     position: absolute;
