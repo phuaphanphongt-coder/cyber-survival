@@ -120,12 +120,13 @@ input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color
 /* CSS สำหรับแถบเวลานับถอยหลัง */
 #countdown-bar-container {
     width: 100%;
-    height: 12px;
+    height: 18px; /* ปรับให้หนาขึ้นนิดนึงจะได้เห็นเลขชัดๆ */
     background-color: #EEDCC6;
     border-radius: 10px;
     margin-bottom: 20px;
     overflow: hidden;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    position: relative; /* สำคัญมาก เพื่อให้อยู่ซ้อนกับตัวเลข */
 }
 #countdown-bar {
     height: 100%;
@@ -133,7 +134,18 @@ input[type=range] { width: 65px; cursor: pointer; accent-color: var(--wood-color
     background-color: #8A9782;
     transition: width 1s linear, background-color 1s;
 }
-
+#countdown-text {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5D5651;
+    font-weight: bold;
+    font-size: 0.85rem;
+    z-index: 2;
+    text-shadow: 0 0 3px rgba(255,255,255,0.8); /* ให้ตัวเลขอ่านง่ายขึ้น */
+}
 .options-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 
 .btn-option { 
