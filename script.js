@@ -462,7 +462,7 @@ function btnSpinClick() {
 // 🌟 ฟังก์ชันคำนวณหลอดเวลาแบบเรียลไทม์ และอัปเดตตัวเลขด้วย
 function updateTimerUI(timeLeftMs) {
     const bar = document.getElementById('countdown-bar');
-    const text = document.getElementById('countdown-text'); // ตัวแปรนี้จะวิ่งไปจับเลขบนหน้าจอ
+    const text = document.getElementById('countdown-text'); 
     
     // ปัดเศษวินาทีให้แสดง 15, 14, 13 ...
     currentDisplaySeconds = Math.ceil(timeLeftMs / 1000);
@@ -481,7 +481,7 @@ function updateTimerUI(timeLeftMs) {
         }
     }
     
-    // 🌟 ตรงนี้แหละครับที่สั่งให้ตัวเลขมันขยับตามเวลาที่ลดลง!
+    // 🌟 อัปเดตตัวเลข
     if (text) {
         text.innerText = currentDisplaySeconds + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
@@ -492,200 +492,168 @@ function loadQuestion() {
     document.getElementById('sit-icon').innerText = q.icon;
     document.getElementById('sit-desc').innerText = q[currentLang];
     
-    const iconContainer = document.getElementById('sit-icon-container');
-    iconContainer.style.animation = 'pulsingGlow 1s infinite alternate ease-in-out';
-    setTimeout(() => { iconContainer.style.animation = ''; }, 2000);
-
-    const optContainer = document.getElementById('options');
-    optContainer.innerHTML = '';
+    // เคลียร์ปุ่มเก่าทิ้ง และสร้างปุ่มคำตอบใหม่
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
     
-    let shuffledOptions = [...q.options];
-    shuffleArray(shuffledOptions);
+    let opts = [...q.options];
+    shuffleArray(opts); // สุ่มสลับตำแหน่งปุ่ม
     
-    shuffledOptions.forEach((opt) => {
+    opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'btn-option';
         btn.innerText = opt[currentLang];
-        btn.dataset.score = opt.score; 
-        btn.onclick = () => handleAnswer(btn, opt.score);
-        optContainer.appendChild(btn);
+        btn.dataset.score = opt.score;
+        // เมื่อกดปุ่ม ให้ส่งคะแนนไปที่ฟังก์ชัน handleAnswer
+        btn.onclick = () => handleAnswer(opt.score);
+        optionsDiv.appendChild(btn);
     });
-
-    // 🌟 เริ่มระบบจับเวลาแบบความแม่นยำสูง
-    clearInterval(questionTimer);
-    isTimeOut = false; // รีเซ็ตสถานะเวลา
-    endTime = Date.now() + TIME_LIMIT_MS; // สร้างจุดจบที่ 15 วินาทีเป๊ะๆ จากเวลาเครื่อง
     
-    updateTimerUI(TIME_LIMIT_MS);
-    
-    // อัปเดตทุกๆ 30 มิลลิวินาที (ทำงานเหมือนเกมเฟรมเรตสูงๆ)
-    questionTimer = setInterval(() => {
-        let timeLeftMs = endTime - Date.now(); // ดึงเวลาจริงมาเทียบ
-        
-        if (timeLeftMs <= 0) {
-            clearInterval(questionTimer);
-            updateTimerUI(0); // ล็อกหลอดให้หยุดที่ 0 พอดิบพอดี
-            isTimeOut = true; 
-            handleAnswer(null, 0); // หมดเวลา
-        } else {
-            updateTimerUI(timeLeftMs); // ขยับหลอดและตัวเลขตามเวลาเป๊ะๆ
-        }
-    }, 30);
+    // เริ่มจับเวลา!
+    startQuestionTimer();
 }
 
-function handleAnswer(btn, score) {
-    clearInterval(questionTimer); 
+function startQuestionTimer() {
+    isTimeOut = false;
+    endTime = Date.now() + TIME_LIMIT_MS;
     
-    const allBtns = document.querySelectorAll('.btn-option');
-    allBtns.forEach(b => b.disabled = true); 
-
-    const isCorrect = score === 10;
-    if (btn) btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (questionTimer) cancelAnimationFrame(questionTimer);
     
-    allBtns.forEach(b => { 
-        if (parseInt(b.dataset.score) === 10) b.classList.add('correct'); 
-    });
+    function update() {
+        const now = Date.now();
+        const timeLeft = endTime - now;
+        
+        if (timeLeft <= 0) {
+            updateTimerUI(0);
+            isTimeOut = true;
+            handleAnswer(-1); // ส่ง -1 ไปบอกว่า "หมดเวลาแล้วนะ"
+            return;
+        }
+        
+        updateTimerUI(timeLeft);
+        questionTimer = requestAnimationFrame(update);
+    }
+    
+    questionTimer = requestAnimationFrame(update);
+}
 
-    if (isCorrect) {
-        totalScore += score; 
+function handleAnswer(score) {
+    // 🛑 สิ่งสำคัญที่สุด: สั่งหยุดเวลาทันทีที่ตอบ หรือเวลาหมด จะได้ไม่บั๊ก!
+    if (questionTimer) cancelAnimationFrame(questionTimer);
+    
+    let earned = 0;
+    if (score === 10) {
+        earned = 10;
         playSound('correct');
+        currentFeedbackType = 'correct';
+        document.getElementById('step-icon').innerText = "✨";
     } else {
         playSound('wrong');
-        lives--; 
-        updateLivesUI();
+        currentFeedbackType = 'wrong';
+        document.getElementById('step-icon').innerText = "❌";
     }
-
-    document.getElementById('score').innerText = totalScore;
-
-    setTimeout(() => { showStepResult(isCorrect); }, 1200);
-}
-
-function showStepResult(isCorrect) {
-    const screenResult = document.getElementById('screen-step-result');
-    showScreen('screen-step-result');
-    screenResult.classList.add('fade-in-slow');
-    setTimeout(() => { screenResult.classList.remove('fade-in-slow'); }, 800);
-
-    const icon = document.getElementById('step-icon');
-    const title = document.getElementById('step-title');
-    const desc = document.getElementById('step-desc');
-    const nextBtn = document.getElementById('btn-next-step');
-
-    currentFeedbackType = isCorrect ? 'correct' : 'wrong';
+    
+    totalScore += earned;
+    
+    // สุ่มข้อความด่า/ชม
     currentFeedbackIndex = Math.floor(Math.random() * feedbackMessages[currentLang][currentFeedbackType].length);
-
-    if (isCorrect) {
-        icon.innerText = "✨";
-        title.innerText = (currentLang === 'th' ? "ถูกต้อง!" : "Correct!");
-        title.style.color = "#8A9782";
-    } else {
-        icon.innerText = "❌";
-        if (isTimeOut) {
-            title.innerText = (currentLang === 'th' ? "หมดเวลา!" : "Time's Up!");
-        } else {
-            title.innerText = (currentLang === 'th' ? "พลาดไปนิด!" : "Wrong!");
-        }
-        title.style.color = "#C08B7A";
-    }
-
-    desc.innerText = feedbackMessages[currentLang][currentFeedbackType][currentFeedbackIndex];
-
-    if (lives > 0 && currentLevel < MAX_LEVEL) {
-        nextBtn.innerText = uiDict[currentLang].nextBtn;
-        nextBtn.style.backgroundColor = "var(--accent-color)";
-        nextBtn.style.boxShadow = "0 6px 0px #A06B5A";
-    } else {
-        nextBtn.innerText = uiDict[currentLang].finishBtn;
-        nextBtn.style.backgroundColor = "#8A9782"; 
-        nextBtn.style.boxShadow = "0 6px 0px #677260";
-    }
+    
+    updateLanguageUI();
+    showScreen('screen-step-result');
 }
 
 function btnNextStepClick() {
-    if (isTransitioning) return; 
-    isTransitioning = true; 
-    
     playSound('click');
-    if (lives > 0 && currentLevel < MAX_LEVEL) { 
+    if (currentLevel >= MAX_LEVEL) {
+        endGame();
+    } else {
         currentLevel++;
         updateProgress();
-        document.getElementById('btn-spin').innerText = uiDict[currentLang].spinBtn + currentLevel;
-        bounceThenTransition(() => {
-            showScreen('screen-gacha');
-            isTransitioning = false; 
-        });
-    } else { 
-        bounceThenTransition(() => {
-            endGame();
-            isTransitioning = false; 
-        });
+        showScreen('screen-gacha');
+        initSlot();
     }
 }
 
 function updateProgress() {
-    const percent = (currentLevel / MAX_LEVEL) * 100;
-    document.getElementById('progress-fill').style.width = percent + '%';
-    document.getElementById('t-progress').innerText = `${uiDict[currentLang].progress}${currentLevel}/${MAX_LEVEL}`;
-}
-
-function fireConfetti() {
-    const duration = 3 * 1000;
-    const end = Date.now() + duration;
-
-    const canvas = document.getElementById('confetti-canvas');
-    if (!canvas) return; 
+    const progressFill = document.getElementById('progress-fill');
+    const tProgress = document.getElementById('t-progress');
     
-    const myConfetti = confetti.create(canvas, {
-        resize: true,
-        useWorker: true
-    });
-
-    (function frame() {
-        myConfetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 }, colors: ['#D8A47F', '#C08B7A', '#8A9782', '#FFD700'] });
-        myConfetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 }, colors: ['#D8A47F', '#C08B7A', '#8A9782', '#FFD700'] });
-        if (Date.now() < end) requestAnimationFrame(frame);
-    }());
-}
-
-function endGame() {
-    clearInterval(totalTimer);
-    showScreen('screen-game-over');
-    
-    gameEndTime = new Date(); 
-
-    document.getElementById('final-score').innerText = totalScore;
-    
-    const timeSpent = document.getElementById('time-val') ? document.getElementById('time-val').innerText : "00:00";
-    document.getElementById('final-time-spent').innerText = timeSpent;
-    
-    updateLanguageUI();
-
-    const rate = Math.round((totalScore / (MAX_LEVEL * 10)) * 100) || 0;
-
-    if (rate >= 50 && lives > 0) {
-        fireConfetti(); 
-        playSound('firework');
-        setTimeout(() => playSound('firework'), 600);
-        setTimeout(() => playSound('firework'), 1400);
-    } else {
-        playSound('fail');
+    if (progressFill && tProgress) {
+        const percent = ((currentLevel - 1) / MAX_LEVEL) * 100;
+        progressFill.style.width = percent + '%';
+        tProgress.innerText = (currentLang === 'th' ? 'ด่านที่ ' : 'Level ') + currentLevel + '/' + MAX_LEVEL;
     }
 }
 
-function btnRestartClick() { location.reload(); }
+function endGame() {
+    clearInterval(totalTimer); // หยุดเวลาเล่นรวม
+    gameEndTime = new Date();
+    
+    const rate = Math.round((totalScore / (MAX_LEVEL * 10)) * 100);
+    const isWin = rate >= 50;
+    
+    playSound(isWin ? 'firework' : 'fail');
+    
+    document.getElementById('final-score').innerText = totalScore;
+    const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const s = String(totalSeconds % 60).padStart(2, '0');
+    document.getElementById('final-time-spent').innerText = `${m}:${s}`;
+    
+    updateLanguageUI();
+    showScreen('screen-game-over');
+    
+    if (isWin) triggerConfetti();
+}
+
+function btnRestartClick() {
+    playSound('click');
+    currentLevel = 1;
+    totalScore = 0;
+    totalSeconds = 0;
+    isSpinning = false;
+    gameEndTime = null;
+    updateProgress();
+    showScreen('screen-main');
+}
+
+function triggerConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
+    myConfetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+}
 
 function saveAsImage() {
-    const area = document.getElementById('capture-area');
-    html2canvas(area, { backgroundColor: "#F8F1E9", scale: 2 }).then(canvas => {
+    playSound('click');
+    const btnSave = document.getElementById('btn-save-img');
+    const originalText = btnSave.innerText;
+    btnSave.innerText = currentLang === 'th' ? "⏳ กำลังบันทึก..." : "⏳ Saving...";
+    btnSave.disabled = true;
+
+    const captureArea = document.getElementById('capture-area');
+    
+    html2canvas(captureArea, {
+        scale: 2,
+        backgroundColor: "#FDF5E6"
+    }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `CyberSurvival_Result.png`;
-        link.href = canvas.toDataURL();
+        link.download = 'Cyber-Survivor-Result.png';
+        link.href = canvas.toDataURL('image/png');
         link.click();
+        
+        btnSave.innerText = originalText;
+        btnSave.disabled = false;
+    }).catch(err => {
+        console.error("Error saving image:", err);
+        btnSave.innerText = originalText;
+        btnSave.disabled = false;
+        alert(currentLang === 'th' ? "เกิดข้อผิดพลาดในการบันทึกรูปภาพ" : "Error saving image");
     });
 }
 
-// Initial Setup
-updateLanguageUI();
-updateProgress();
-updateLivesUI();
-initSlot();
+// โหลดหน้าเว็บครั้งแรกให้ตั้งค่าเริ่มต้นเลย
+window.onload = () => {
+    updateLanguageUI();
+    updateProgress();
+    initSlot();
+};
