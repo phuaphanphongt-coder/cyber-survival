@@ -225,9 +225,9 @@ let gameEndTime = null;
 // 🌟 ตัวแปรจับเวลาแบบความแม่นยำสูง
 let questionTimer;
 let endTime = 0;
-const TIME_LIMIT_MS = 15000; // 15 วินาทีในหน่วยมิลลิวินาที
-let isTimeOut = false; // ตัวเช็คว่าหมดเวลาหรือยัง
-let currentDisplaySeconds = 15; // เอาไว้เก็บเลขโชว์ตอนเปลี่ยนภาษา
+const TIME_LIMIT_MS = 15000; // 15 วินาที
+let isTimeOut = false; 
+let currentDisplaySeconds = 15; 
 
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -243,17 +243,35 @@ function showScreen(id) {
     document.getElementById(id).style.display = 'flex';
 }
 
+// 🌟 ปรับระบบ Transition ให้ฉลาดขึ้น ป้องกันปุ่มค้าง
 function bounceThenTransition(callback) {
-    const activeScreen = document.querySelector('.screen[style*="display: flex"]');
+    // หาหน้าจอที่กำลังแสดงอยู่ (ไม่ว่าจะจาก CSS หรือ Inline Style)
+    const screens = document.querySelectorAll('.screen');
+    let activeScreen = null;
+    screens.forEach(s => {
+        if (window.getComputedStyle(s).display !== 'none') {
+            activeScreen = s;
+        }
+    });
+
     if (activeScreen) {
         activeScreen.classList.add('bounce-fade');
         setTimeout(() => {
             activeScreen.classList.remove('bounce-fade');
             callback();
-            const newScreen = document.querySelector('.screen[style*="display: flex"]');
-            if (newScreen) newScreen.classList.add('fade-in-slow');
-            setTimeout(() => { if (newScreen) newScreen.classList.remove('fade-in-slow'); }, 800);
-        }, 1500); 
+            
+            // หาหน้าจอใหม่ที่เพิ่งถูกแสดง เพื่อใส่ Effect เฟดเข้า
+            let newScreen = null;
+            document.querySelectorAll('.screen').forEach(s => {
+                if (window.getComputedStyle(s).display !== 'none') {
+                    newScreen = s;
+                }
+            });
+            if (newScreen) {
+                newScreen.classList.add('fade-in-slow');
+                setTimeout(() => { newScreen.classList.remove('fade-in-slow'); }, 800);
+            }
+        }, 800); // ระยะเวลาเล่น Effect เด้งหาย
     } else {
         callback();
     }
@@ -391,7 +409,8 @@ function btnStartClick() {
 }
 
 function updateLivesUI() {
-    document.getElementById('lives').innerText = lives;
+    const livesEl = document.getElementById('lives');
+    if(livesEl) livesEl.innerText = lives;
 }
 
 function initSlot() {
@@ -459,21 +478,17 @@ function btnSpinClick() {
     }, (duration * 1000) + 1000); 
 }
 
-// 🌟 ฟังก์ชันคำนวณหลอดเวลาแบบเรียลไทม์ และอัปเดตตัวเลขด้วย
 function updateTimerUI(timeLeftMs) {
     const bar = document.getElementById('countdown-bar');
     const text = document.getElementById('countdown-text'); 
     
-    // ปัดเศษวินาทีให้แสดง 15, 14, 13 ...
     currentDisplaySeconds = Math.ceil(timeLeftMs / 1000);
     if (currentDisplaySeconds < 0) currentDisplaySeconds = 0;
 
     if (bar) {
-        // คำนวณความยาวหลอดเป็นเปอร์เซ็นต์แบบละเอียด
         const percent = (timeLeftMs / TIME_LIMIT_MS) * 100;
         bar.style.width = Math.max(0, percent) + '%';
         
-        // เปลี่ยนสีหลอดตอน 5 วินาทีสุดท้าย
         if (currentDisplaySeconds > 5) {
             bar.style.backgroundColor = '#8A9782'; 
         } else {
@@ -481,7 +496,6 @@ function updateTimerUI(timeLeftMs) {
         }
     }
     
-    // 🌟 อัปเดตตัวเลข
     if (text) {
         text.innerText = currentDisplaySeconds + (currentLang === 'th' ? ' วินาที' : ' sec');
     }
@@ -492,24 +506,21 @@ function loadQuestion() {
     document.getElementById('sit-icon').innerText = q.icon;
     document.getElementById('sit-desc').innerText = q[currentLang];
     
-    // เคลียร์ปุ่มเก่าทิ้ง และสร้างปุ่มคำตอบใหม่
     const optionsDiv = document.getElementById('options');
     optionsDiv.innerHTML = '';
     
     let opts = [...q.options];
-    shuffleArray(opts); // สุ่มสลับตำแหน่งปุ่ม
+    shuffleArray(opts); 
     
     opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'btn-option';
         btn.innerText = opt[currentLang];
         btn.dataset.score = opt.score;
-        // เมื่อกดปุ่ม ให้ส่งคะแนนไปที่ฟังก์ชัน handleAnswer
         btn.onclick = () => handleAnswer(opt.score);
         optionsDiv.appendChild(btn);
     });
     
-    // เริ่มจับเวลา!
     startQuestionTimer();
 }
 
@@ -526,7 +537,7 @@ function startQuestionTimer() {
         if (timeLeft <= 0) {
             updateTimerUI(0);
             isTimeOut = true;
-            handleAnswer(-1); // ส่ง -1 ไปบอกว่า "หมดเวลาแล้วนะ"
+            handleAnswer(-1); 
             return;
         }
         
@@ -538,7 +549,6 @@ function startQuestionTimer() {
 }
 
 function handleAnswer(score) {
-    // 🛑 หยุดเวลาทันทีที่ตอบ
     if (questionTimer) cancelAnimationFrame(questionTimer);
     
     let earned = 0;
@@ -554,37 +564,28 @@ function handleAnswer(score) {
     }
     
     totalScore += earned;
-    
-    // สุ่มข้อความด่า/ชม
     currentFeedbackIndex = Math.floor(Math.random() * feedbackMessages[currentLang][currentFeedbackType].length);
-    
     updateLanguageUI();
 
-    // 🌟 เพิ่มเอฟเฟกต์ความสมูทตรงนี้แหละครับ!
+    // 🌟 โชว์หน้าจอแบบสมูทๆ
     bounceThenTransition(() => {
         showScreen('screen-step-result');
-        // เพิ่มคลาส fade-in-slow ให้หน้าเฉลยมันค่อยๆ โผล่มาแบบหล่อๆ
-        const screenResult = document.getElementById('screen-step-result');
-        if (screenResult) {
-            screenResult.classList.add('fade-in-slow');
-            setTimeout(() => { screenResult.classList.remove('fade-in-slow'); }, 800);
-        }
     });
-}
-    
-    updateLanguageUI();
-    showScreen('screen-step-result');
 }
 
 function btnNextStepClick() {
     playSound('click');
     if (currentLevel >= MAX_LEVEL) {
-        endGame();
+        bounceThenTransition(() => {
+            endGame();
+        });
     } else {
         currentLevel++;
         updateProgress();
-        showScreen('screen-gacha');
-        initSlot();
+        bounceThenTransition(() => {
+            showScreen('screen-gacha');
+            initSlot();
+        });
     }
 }
 
@@ -600,7 +601,7 @@ function updateProgress() {
 }
 
 function endGame() {
-    clearInterval(totalTimer); // หยุดเวลาเล่นรวม
+    if (totalTimer) clearInterval(totalTimer);
     gameEndTime = new Date();
     
     const rate = Math.round((totalScore / (MAX_LEVEL * 10)) * 100);
@@ -611,7 +612,9 @@ function endGame() {
     document.getElementById('final-score').innerText = totalScore;
     const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
     const s = String(totalSeconds % 60).padStart(2, '0');
-    document.getElementById('final-time-spent').innerText = `${m}:${s}`;
+    
+    const finalTimeEl = document.getElementById('final-time-spent');
+    if(finalTimeEl) finalTimeEl.innerText = `${m}:${s}`;
     
     updateLanguageUI();
     showScreen('screen-game-over');
@@ -627,7 +630,10 @@ function btnRestartClick() {
     isSpinning = false;
     gameEndTime = null;
     updateProgress();
-    showScreen('screen-main');
+    
+    bounceThenTransition(() => {
+        showScreen('screen-main');
+    });
 }
 
 function triggerConfetti() {
