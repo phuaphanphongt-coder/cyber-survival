@@ -7,8 +7,8 @@ let previousVolume = 0.5;
 
 let currentLang = 'th'; 
 
-const externalFailSound = new Audio('fail.mp3'); 
-const externalFireworkSound = new Audio('firework.mp3'); 
+const externalFailSound = new Audio('Fail.mp3'); 
+const externalFireworkSound = new Audio('Firework.mp3');
 
 function toggleMute() {
     const volIcon = document.getElementById('vol-icon');
