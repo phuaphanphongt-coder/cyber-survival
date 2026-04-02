@@ -78,20 +78,22 @@ function playSound(type) {
 // === 1. DATA & LANGUAGES ===
 const uiDict = {
     th: {
-        subtitle: "เตือนแล้วนะ! โลกออนไลน์มันเหลี่ยมเยอะ", welcome: "พร้อมวัดสกิลเอาตัวรอดจากพวกมิจจี้แล้วยัง?",
-        startBtn: "ลุยเลย รออะไร!", spinBtn: "🎲 สุ่มข้อที่ ", scoreLabel: "แต้ม: ",
-        progress: "ข้อที่ ", endTitleWin: "SURVIVED! รอดแล้วพวกเรา", endTitleLose: "WASTED! โดนตกซะงั้น",
-        nextBtn: "➡️ ไปต่ออย่าแผ่ว!", finishBtn: "📊 ดูผลสรุป", 
+        subtitle: "ตอบคำถามการเอาตัวรอดจาก Malware", 
+        welcome: "พร้อมตอบคำถามการเอาตัวรอดจากการโดนไวรัส Malware หรือยัง?",
+        startBtn: "ลุยเลย รออะไร!", spinBtn: "🔥 สแกนไวรัสอันดับ ", scoreLabel: "แต้ม: ",
+        progress: "ด่านที่ ", endTitleWin: "SYSTEM SECURED! ปลอดภัยไร้ไวรัส", endTitleLose: "SYSTEM CRASHED! เครื่องพังซะงั้น",
+        nextBtn: "➡️ กู้ระบบด่านต่อไป!", finishBtn: "📊 ดูผลสรุป", 
         dateTime: "วันที่:", totalScore: "คะแนนรวม:", timeSpent: "เวลาที่ใช้:", surviveRate: "อัตราการรอด:",
-        rankTitle: "สเตตัสความขลังของคุณ", btnSave: "📸 เซฟรูปอวดเพื่อน", btnRestart: "🔄 ขอแก้มืออีกรอบ"
+        rankTitle: "ระดับการเอาตัวรอดของคุณ", btnSave: "📸 บันทึกรูป", btnRestart: "🔄 เริ่มเล่นใหม่"
     },
     en: {
-        subtitle: "Watch out! The internet is full of traps.", welcome: "Ready to test your survival skills against scammers?",
-        startBtn: "Let's Go!", spinBtn: "🎲 Spin Level ", scoreLabel: "Score: ",
-        progress: "Level ", endTitleWin: "SURVIVED!", endTitleLose: "WASTED!",
-        nextBtn: "➡️ Next!", finishBtn: "📊 See Results",
+        subtitle: "Top 10 Malware Attacks You Must Survive!", 
+        welcome: "Are you ready to answer the question of how to survive being infected with a malware virus?",
+        startBtn: "Boot System!", spinBtn: "🔥 Scan Threat #", scoreLabel: "Score: ",
+        progress: "Level ", endTitleWin: "SYSTEM SECURED!", endTitleLose: "SYSTEM CRASHED!",
+        nextBtn: "➡️ Next Threat!", finishBtn: "📊 See Scan Results",
         dateTime: "Date:", totalScore: "Total Score:", timeSpent: "Time Spent:", surviveRate: "Survival Rate:",
-        rankTitle: "Your Rank", btnSave: "📸 Save Image", btnRestart: "🔄 Play Again"
+        rankTitle: "Your Cybersecurity Rank", btnSave: "📸 Save Image", btnRestart: "🔄 Replay"
     }
 };
 
@@ -130,82 +132,77 @@ const feedbackMessages = {
     }
 };
 
-// คลังคำถาม 25 ข้อ 
+// คลังคำถาม 10 อันดับ Malware (กลับมาใช้ Emoji)
 const scenarios = [
-    { icon: "🎭", title_th: "ปลอมโปรไฟล์", title_en: "Fake Profile", th: "ปื้มแคปหน้าจอส่งมาให้ดู ว่ามีแอคหลุมเอารูปเราไปตั้งโปรไฟล์หลอกขายของเฉย!", en: "Pluem sent a screenshot of a fake account using your photo to scam people!",
-      options: [{ th: "ปล่อยเบลอ ขี้เกียจวุ่นวาย", en: "Ignore it, too lazy to care", score: 0 }, { th: "กดรีพอร์ตให้ปลิว แล้วแคปไปแจ้งความ", en: "Report the account and tell police", score: 10 }, { th: "ให้ปื้มพาทัวร์ไปลง ทักไปต่อว่าให้เขาลบ", en: "Let Pluem lead a mob to report them", score: 5 }]
+    { icon: "🪩", title_th: "ไวรัสซ่อนแอบ (Trojan Horse)", title_en: "Threat 1: Trojan Horse", 
+      th: "โหลดโปรแกรมเถื่อน 'Photoshop แคร็กฟรี' มาติดตั้ง จู่ๆ เครื่องก็รวนแถมมีโปรแกรมแปลกๆ โผล่มาเต็มเครื่อง", 
+      en: "Downloaded a 'Free Photoshop Crack'. Suddenly, PC acts weird and weird apps appear.",
+      options: [{ th: "ปิดแอนตี้ไวรัส เพื่อให้ติดตั้งแคร็กให้เสร็จ", en: "Turn off antivirus so the crack can finish installing", score: 0 }, 
+                { th: "ลบไฟล์ทิ้งทันที แล้วสั่ง Full Scan ด้วยแอนตี้ไวรัส", en: "Delete immediately and run a Full Antivirus Scan", score: 10 }, 
+                { th: "แค่ปิดโปรแกรมแปลกๆ ทิ้งแล้วรีสตาร์ทคอมพอ", en: "Just close the weird apps and restart PC", score: 5 }]
     },
-    { icon: "📱", title_th: "SMS ดูดเงิน", title_en: "Scam SMS", th: "จู่ๆ มี SMS เข้าเบอร์เราว่า 'ถอนเงินสำเร็จ 50,000 บ.' อะตอมรีบทักมายุให้รีบกดลิงก์ไปยกเลิกด่วน!", en: "Got SMS: '50k THB withdrawn.' Atom tells you to quickly click the link to cancel!",
-      options: [{ th: "ล่กตามอะตอม รีบกดลิงก์ด่วนๆ", en: "Panic like Atom, click the link", score: 0 }, { th: "ดึงสติก่อน โทรเข้า Call Center ธนาคารชัวร์สุด", en: "Stay calm, call the bank directly", score: 10 }, { th: "เตือนอะตอมว่าอย่าเพิ่งหลงเชื่อ แล้วลบข้อความทิ้ง", en: "Tell Atom not to fall for it and delete the SMS", score: 5 }]
+    { icon: "🪩", title_th: "นักแอบดู (Spyware)", title_en: "Threat 2: Spyware", 
+      th: "เล่นเน็ตคาเฟ่ สังเกตว่าตอนพิมพ์รหัสผ่าน Facebook เครื่องกระตุกแปลกๆ เหมือนโดนดักจับการพิมพ์ (Keylogger)", 
+      en: "At a cyber cafe, typing your password feels laggy. Might be a Keylogger!",
+      options: [{ th: "ช่างมัน รีบๆ ล็อกอินรีบๆ เล่น", en: "Ignore it, just log in quickly", score: 0 }, 
+                { th: "ไม่ล็อกอินเด็ดขาด! แล้วใช้เน็ตมือถือตัวเองเปลี่ยนรหัสผ่าน", en: "Don't log in! Use mobile data to change password.", score: 10 }, 
+                { th: "พิมพ์หลอกๆ สลับช่องไปมาให้โปรแกรมงง", en: "Type randomly across fields to confuse it", score: 5 }]
     },
-    { icon: "📦", title_th: "พัสดุตกค้าง", title_en: "Stuck Parcel", th: "เคนทักมาถาม 'แกสั่งของป่าววะ มี SMS แจ้งพัสดุตกค้าง ให้กดลิงก์ไปจ่ายค่าส่งเพิ่ม'", en: "Ken asks: 'Did you order something? SMS says package stuck, click link to pay fee.'",
-      options: [{ th: "กดลิงก์จ่ายๆ ไป จะได้ของไวๆ", en: "Click link and pay to get it fast", score: 0 }, { th: "บอกเคนว่ามิจชัวร์! ไปเช็คเลขแทรคในแอปออฟฟิเชียลเองดีกว่า", en: "Tell Ken it's a scam, check official app", score: 10 }, { th: "ทักไปโวยร้านที่เพิ่งสั่งของไป", en: "Complain to the shop you bought from", score: 5 }]
+    { icon: "🪩", title_th: "โฆษณานรก (Adware)", title_en: "Threat 3: Adware", 
+      th: "เปิดเบราว์เซอร์แล้วหน้าแรกเปลี่ยนไปเอง แถมมีป๊อปอัปโฆษณาเว็บพนันเด้งรัวๆ จนคอมค้าง", 
+      en: "Browser homepage changed magically and flooded with gambling pop-up ads.",
+      options: [{ th: "กดคลิกโฆษณาดูเผื่อมีอะไรน่าสนใจ", en: "Click the ads to see what they are selling", score: 0 }, 
+                { th: "ลบ Extension แปลกๆ ในเบราว์เซอร์ แล้วรัน Anti-Malware", en: "Remove weird extensions and run Anti-Malware.", score: 10 }, 
+                { th: "พยายามกดกากบาท (X) ปิดโฆษณาทีละอัน", en: "Try to manually close all pop-ups one by one", score: 5 }]
     },
-    { icon: "👮", title_th: "ตำรวจทิพย์", title_en: "Fake Police", th: "สายเข้าอ้างเป็นตำรวจ บอกบัญชีเราพัวพันเว็บพนัน ปันนั่งอยู่ข้างๆ ยุให้จัดการบ่นไปเลย", en: "Call from 'police' about gambling. Pun is next to you telling you to complain to them.",
-      options: [{ th: "กลัวโดนจับ รีบโอนเงินไปให้เขาเช็คความบริสุทธิ์", en: "Freak out and transfer the money", score: 0 }, { th: "ตัดสายทิ้งบล็อกเบอร์ ตำรวจที่ไหนให้โอนเงินผ่านแอป!", en: "Hang up. Real cops don't ask for transfers!", score: 10 }, { th: "ทำตามที่ปันบอก จัดการสวดร้อยเวรปลอมไปหนึ่งแมตช์", en: "Complain to them like Pun suggested", score: 5 }]
+    { icon: "🪩", title_th: "หนอนชอนไช (Worm)", title_en: "Threat 4: Computer Worm", 
+      th: "เสียบแฟลชไดรฟ์เพื่อนเข้าคอมปุ๊บ ไฟล์งานทั้งหมดกลายเป็นไอคอน Shortcut ลูกศรโค้งๆ หมดเลย!", 
+      en: "Plugged in a friend's USB, suddenly all your files turn into shortcuts!",
+      options: [{ th: "ดับเบิลคลิกที่ Shortcut เพื่อเปิดหาไฟล์งาน", en: "Double-click the shortcuts to find your files", score: 0 }, 
+                { th: "ห้ามคลิกเด็ดขาด! รีบสั่งสแกนไวรัสในแฟลชไดรฟ์ด่วน", en: "DON'T click! Scan the USB with antivirus immediately.", score: 10 }, 
+                { th: "ฟอร์แมต (Format) แฟลชไดรฟ์ทิ้งไปเลย", en: "Format the USB drive without checking", score: 5 }]
     },
-    { icon: "💼", title_th: "งานกดไลก์", title_en: "Fake Online Job", th: "ฟิล์มแชร์โพสต์ 'งานออนไลน์ แค่กดไลก์คลิป รับวันละ 1,000 บ.' มาให้ดู บอกว่าน่าสนจัด", en: "Film shares a post: 'Easy job, like videos for 1,000/day'. Says it looks interesting.",
-      options: [{ th: "น่าสน สมัครเลย ยอมจ่ายค่าสอนงานนิดหน่อย", en: "Apply and pay the 'training fee'", score: 0 }, { th: "บอกฟิล์มให้ตื่น! งานสบายรายได้ดีขนาดนี้มันหลอกชัวร์", en: "Tell Film to wake up. It's a scam", score: 10 }, { th: "แชร์ไปถามในกลุ่มเพื่อน 'พวกแกว่าไง น่าลองป่ะ'", en: "Share to ask friends if it's legit", score: 5 }]
+    { icon: "🪩", title_th: "กองทัพซอมบี้ (Botnet)", title_en: "Threat 5: Botnet", 
+      th: "กล้องวงจรปิด (IP Camera) ที่บ้านหมุนเองได้ แถมเน็ตบ้านช้าอืดเหมือนโดนดึงดึงแบนด์วิดท์ไปยิงเว็บคนอื่น (DDoS)", 
+      en: "Smart IP camera moves on its own and home internet is super slow. Might be part of a Botnet!",
+      options: [{ th: "ปล่อยไว้ เดี๋ยวมันก็กลับมาปกติเอง", en: "Leave it alone, it will fix itself", score: 0 }, 
+                { th: "ถอดปลั๊ก รีเซ็ตเครื่อง และเปลี่ยนรหัสผ่าน Default ทันที", en: "Unplug, factory reset, and change default password.", score: 10 }, 
+                { th: "เอาเทปกาวดำไปแปะหน้ากล้องไว้", en: "Put a black tape over the camera lens", score: 5 }]
     },
-    { icon: "💖", title_th: "หลอกรักออนไลน์", title_en: "Romance Scam", th: "มีฝรั่งโปรไฟล์ดูรวยทักมาจีบ แถมบอกจะส่งแบรนด์เนมมาให้ คิวบอก 'รับเลยเพื่อน เดี๋ยวเราช่วยออกค่าภาษี'", en: "Hot foreigner flirts, says they'll send designer gifts. Q says 'Take it, I'll help pay customs!'",
-      options: [{ th: "โอนดิรอไร! ของฟรีมูลค่าเป็นแสนเลยนะ", en: "Pay the fee! The gift is worth way more!", score: 0 }, { th: "บอกคิวว่าสแกมเมอร์แน่ๆ! บล็อก+รีพอร์ต จบปิ๊ง", en: "Tell Q it's a scammer. Block & Report.", score: 10 }, { th: "เหงาพอดี คุยปั่นหัวสแกมเมอร์เล่นดีกว่า", en: "Troll them since you're bored anyway", score: 5 }]
+    { icon: "🪩", title_th: "แอบขุดเหรียญ (Cryptojacking)", title_en: "Threat 6: Cryptojacking", 
+      th: "เข้าเว็บดูหนังเถื่อนฟรี จู่ๆ พัดลมโน้ตบุ๊กดังลั่นเหมือนเครื่องบินเจ็ท CPU พุ่ง 100% แม้ไม่ได้เปิดโปรแกรมอื่น", 
+      en: "Visiting a free streaming site, laptop fan goes crazy (100% CPU usage) mining crypto.",
+      options: [{ th: "ปล่อยเครื่องค้างไว้ ดูหนังต่อให้จบ", en: "Let it run and finish watching the movie", score: 0 }, 
+                { th: "ปิดแท็บเบราว์เซอร์นั้นทิ้งทันที และติดตั้งส่วนเสริมบล็อกสคริปต์", en: "Close tab instantly and install a script blocker.", score: 10 }, 
+                { th: "ย่อหน้าจอเว็บลง แล้วเปิดเกมเล่นแก้เซ็ง", en: "Minimize the browser and open a game", score: 5 }]
     },
-    { icon: "🎉", title_th: "แจกของฟรี", title_en: "Free Giveaway", th: "กำลังดูซีรีส์กับปื้ม จู่ๆ มีป๊อปอัปเด้ง 'ยินดีด้วย! คุณคือผู้โชคดีรับ iPhone 15 ฟรี!'", en: "Watching series with Pluem, popup appears: 'Congrats! You won a free iPhone 15!'",
-      options: [{ th: "แย่งปื้มกด กรอกชื่อที่อยู่ด่วนๆ", en: "Fight Pluem to type details first", score: 0 }, { th: "กด X ปิดหน้าต่างทิ้งอย่างไว ของฟรีไม่มีในโลกนะ", en: "Close it instantly. Nothing is free.", score: 10 }, { th: "กดเข้าไปส่องเงื่อนไขสักหน่อย เผื่อได้จริง", en: "Click to read terms just in case", score: 5 }]
+    { icon: "🪩", title_th: "วิญญาณซ่อนแอบ (Rootkit)", title_en: "Threat 7: Rootkit", 
+      th: "แอนตี้ไวรัสถูกปิดการทำงานเอง คอมช้าผิดปกติ แต่พอกดสแกนหาไวรัสกลับเจอ 0 ตัว! มันซ่อนลึกระดับ OS", 
+      en: "Antivirus keeps turning off, PC is slow, but scans show 0 viruses. It's hiding deep!",
+      options: [{ th: "คิดว่า Windows อัปเดต เลยปล่อยผ่าน", en: "Assume it's a Windows update and ignore", score: 0 }, 
+                { th: "เข้า Safe Mode หรือใช้ Antivirus แบบ Bootable USB มาสแกน", en: "Boot into Safe Mode or use Bootable Antivirus USB.", score: 10 }, 
+                { th: "ลบโปรแกรมแอนตี้ไวรัสแล้วลงใหม่", en: "Uninstall and reinstall the same antivirus", score: 5 }]
     },
-    { icon: "💬", title_th: "เพื่อนทักยืมเงิน", title_en: "Friend Needs Money", th: "แชทปันเด้งมา 'แก ยืมเงิน 5,000 ดิ เดือดร้อนมาก เดี๋ยวพรุ่งนี้คืน'", en: "Pun's chat pops up: 'Need 5k urgently, will pay back tomorrow!'",
-      options: [{ th: "เพื่อนรักลำบาก รีบโอนสลิปส่งไปอย่างไว", en: "Transfer immediately to help a friend", score: 0 }, { th: "ยกหูโทรหาปันเลย ชัวร์สุดว่าใช่ตัวจริงไหม", en: "Call Pun directly to hear his voice", score: 10 }, { th: "ลองถามคำถามกันเหนียว 'แฟนเก่าเคนชื่ออะไร?'", en: "Ask a secret question about Ken's ex", score: 5 }]
+    { icon: "🪩", title_th: "แอปดูดข้อมูล (Malicious App)", title_en: "Threat 8: Mobile Malware", 
+      th: "โหลดแอป 'เครื่องคิดเลข' แบบไฟล์ .apk นอกสโตร์ แต่ตอนเปิดแอปมันขอสิทธิ์เข้าถึง SMS และรายชื่อผู้ติดต่อ", 
+      en: "Downloaded a 'Calculator' .apk, but it asks for SMS and Contacts permissions.",
+      options: [{ th: "กดยอมรับสิทธิ์ไปเลย จะได้รีบใช้แอป", en: "Allow all permissions to use it quickly", score: 0 }, 
+                { th: "ปฏิเสธการให้สิทธิ์ และลบแอปทิ้งทันที! เครื่องคิดเลขไม่จำเป็นต้องอ่าน SMS", en: "Deny permissions and uninstall! Calculators don't need SMS.", score: 10 }, 
+                { th: "อนุญาตแค่รายชื่อผู้ติดต่อ ไม่อนุญาต SMS", en: "Allow only Contacts, deny SMS", score: 5 }]
     },
-    { icon: "📶", title_th: "Wi-Fi อันตราย", title_en: "Unsafe Wi-Fi", th: "มานั่งคาเฟ่กับอะตอม มันบอกให้ต่อ 'Free Wi-Fi' ของร้านสิ จะได้โอนเงินค่ากาแฟฟรีๆ ไม่เปลืองเน็ต", en: "At a cafe with Atom, he tells you to connect to 'Free Wi-Fi' to transfer money.",
-      options: [{ th: "ต่อเน็ตฟรีตามที่อะตอมบอก โอนเลยละกัน", en: "Connect and transfer to save data", score: 0 }, { th: "ปิด Wi-Fi แล้วใช้ 5G ตัวเองโอน ปลอดภัยกว่าเยอะ", en: "Turn off Wi-Fi, use mobile data", score: 10 }, { th: "รีบโอนรีบตัดเน็ต ไม่น่าเป็นไรมั้ง", en: "Use Wi-Fi but do it super fast", score: 5 }]
+    { icon: "🪩", title_th: "หลอกให้กลัว (Scareware)", title_en: "Threat 9: Scareware", 
+      th: "มีหน้าต่างสีแดงเด้งขึ้นมาเตือนว่า 'PC ของคุณติดไวรัส 39 ตัว! โปรดดาวน์โหลด PC Optimizer ด่วน'", 
+      en: "Red popup says 'Your PC has 39 viruses! Download PC Optimizer NOW!'",
+      options: [{ th: "ตกใจ รีบกดดาวน์โหลดแอปมาสแกนเครื่อง", en: "Panic and download the app to scan", score: 0 }, 
+                { th: "กด Alt+F4 ปิดเบราว์เซอร์ทิ้ง มันคือหน้าเว็บหลอกลวง", en: "Force close the browser (Alt+F4). It's a fake site.", score: 10 }, 
+                { th: "โหลดมาเก็บไว้ในเครื่องก่อน แต่ยังไม่ติดตั้ง", en: "Download the file but don't install it yet", score: 5 }]
     },
-    { icon: "🛍️", title_th: "ของถูกเกินจริง", title_en: "Too Good to be True", th: "ฟิล์มแท็กเรียกไปดูเพจขาย PS5 ลดราคา 70% คอมเมนต์อวยฉ่ำ 'ได้ของจริงค่ะ ส่งไวมาก'", en: "Film tags you on a page selling PS5 at 70% off. Comments: 'Legit! Fast shipping!'",
-      options: [{ th: "F ด่วนจี๋ สั่งตัดหน้าฟิล์ม กลัวของหมด", en: "Buy it before Film does", score: 0 }, { th: "ทรงนี้หน้าม้าชัวร์ เตือนฟิล์มแล้วไปซื้อร้าน Official ดีกว่า", en: "Warn Film, buy from official store instead", score: 10 }, { th: "ทักเพจไปถาม 'มีปลายทางไหมคะพี่'", en: "Message to ask for Cash on Delivery", score: 5 }]
-    },
-    { icon: "📲", title_th: "แอปหน่วยงานปลอม", title_en: "Fake Gov App", th: "เบอร์แปลกอ้างเป็นกรมที่ดิน ให้โหลดแอป .apk เพื่อทำเรื่องรับภาษีคืน เคนบอก 'กดรับสิทธิ์เลยเพื่อน'", en: "Fake Land Dept caller tells you to download .apk for refund. Ken says 'Claim it bro!'",
-      options: [{ th: "เชื่อเคน โหลดแอป แล้วกดยอมรับทุกสิทธิ์การเข้าถึง", en: "Trust Ken, download app and allow all permissions", score: 0 }, { th: "ปฏิเสธแล้ววางสาย รัฐบาลไม่ให้โหลดแอปนอกสโตร์หรอก!", en: "Decline and hang up. Gov apps are in the Store!", score: 10 }, { th: "บอกให้เขาส่งเอกสารมาที่บ้านแทนละกัน", en: "Tell them to mail the documents instead", score: 5 }]
-    },
-    { icon: "📈", title_th: "หลอกลงทุน", title_en: "Investment Scam", th: "คิวชวนเข้ากลุ่มลงทุนคริปโต การันตีกำไร 100% ภายใน 1 เดือน เขาบอก 'เชื่อเรา เราศึกษามาดี!'", en: "Q invites you to crypto group, 100% guaranteed profit! He says 'Trust me!'",
-      options: [{ th: "All-in ตามคิวไปเลย รวยไปด้วยกัน", en: "All-in with Q! Gonna be rich!", score: 0 }, { th: "เตือนคิวว่า 'การันตีกำไร = แชร์ลูกโซ่' แล้วออกจากกลุ่ม", en: "Warn Q it's a Ponzi, leave group", score: 10 }, { th: "หยอดขำๆ ไปสักพันนึง เผื่อได้จริง", en: "Invest a small amount just in case", score: 5 }]
-    },
-    { icon: "🔗", title_th: "ไฟล์แนบไวรัส", title_en: "Malicious File", th: "ปันฟอร์เวิร์ดเมลด่วนมาให้ ไฟล์ชื่อ 'โครงสร้างโบนัสปีนี้.exe' บอกว่า 'อะตอมส่งมา รีบเปิดดูเลย!'", en: "Pun forwards urgent email 'Bonus.exe', says 'Atom sent it, open it quick!'",
-      options: [{ th: "ตาลุกวาว รีบดับเบิลคลิกเปิดไฟล์ดูโบนัสทันที", en: "Excited, double-click immediately to check", score: 0 }, { th: "ไฟล์ .exe มันแปลกๆ ทักไลน์ไปถามอะตอมตัวจริงก่อนดีกว่า", en: "Weird extension. Ask Atom on Line first", score: 10 }, { th: "โยนเข้าโปรแกรมสแกนไวรัสเช็คดูก่อนเปิด", en: "Run it through Antivirus first", score: 5 }]
-    },
-    { icon: "🔑", title_th: "ลิงก์กู้รหัสผ่าน", title_en: "Phishing Link", th: "ฟิล์มแคปหน้าจอเมลเตือนมาโวยวาย 'แก! บัญชีแกกำลังถูกแฮ็ก รีบกดลิงก์นี้ไปเปลี่ยนรหัสผ่านด่วน!'", en: "Film sends screenshot: 'Your account is hacked! Click link to reset password NOW!'",
-      options: [{ th: "ล่กตามฟิล์ม รีบกดลิงก์ไปกรอกรหัสผ่านเพื่อกู้บัญชี", en: "Panic with Film, click link and enter password", score: 0 }, { th: "ใจเย็นๆ ไม่กดลิงก์มั่ว เปิดเว็บแพลตฟอร์มนั้นเองแล้วค่อยเปลี่ยนรหัส", en: "Don't click link. Open app manually to change password", score: 10 }, { th: "ปล่อยเบลอ ขี้เกียจเปลี่ยนรหัสใหม่", en: "Ignore, too lazy to change passwords", score: 5 }]
-    },
-    { icon: "🐶", title_th: "บริจาคปลอม", title_en: "Fake Donation", th: "ปื้มแชร์โพสต์ขอบริจาคช่วยน้องหมาป่วยหนัก! แต่อ้าว... เลขบัญชีเป็นชื่อนายสมชาย ไม่ใช่ชื่อมูลนิธิ", en: "Pluem shares a donation post for a sick dog! But the bank account is a random guy's name.",
-      options: [{ th: "สงสารน้องหมา รีบโอนเงินไปช่วยตามที่ปื้มแชร์", en: "Feel bad, transfer money instantly", score: 0 }, { th: "เอะใจ เตือนปื้มแล้วเอาชื่อไปเช็คเว็บ Blacklistseller ก่อน", en: "Warn Pluem and check name on blacklist site first", score: 10 }, { th: "ไม่มีตังค์ ช่วยแชร์ลงสตอรี่ไปละกัน", en: "No money, just share the post", score: 5 }]
-    },
-    { icon: "🏖️", title_th: "ที่พักทิพย์", title_en: "Fake Booking", th: "ปันเจอที่พักพูลวิลล่าลด 80% ในเฟซบุ๊ก แอดมินเร่งให้โอนเต็มจำนวนเข้าบัญชี 'นาย สมมติ หลอกลวง'", en: "Pun found a pool villa at 80% off on FB. Admin says transfer full amount to a personal account now!",
-      options: [{ th: "โอนเลยด่วนๆ โปรไฟไหม้เดี๋ยวห้องหลุด", en: "Transfer fast before it's fully booked", score: 0 }, { th: "เตือนปันว่าเพจปลอมแน่ๆ บัญชีส่วนตัว=หนีไป!", en: "Warn Pun it's fake. Personal account = RUN!", score: 10 }, { th: "ขอมัดจำไปก่อนครึ่งนึง เพื่อความสบายใจ", en: "Ask to pay 50% deposit just to be safe", score: 5 }]
-    },
-    { icon: "👶", title_th: "ลิงก์โหวตหลาน", title_en: "Phishing Vote", th: "เคนทักไลน์มา 'แกๆ ช่วยกดลิงก์โหวตหลานเราประกวดเด็กน่ารักหน่อย ต้องล็อกอิน Facebook ด้วยนะ'", en: "Ken lines you: 'Help vote for my nephew in a contest. Click link and log in with FB.'",
-      options: [{ th: "รีบกดลิงก์ กรอกรหัสเฟซบุ๊กเพื่อโหวตให้หลานเพื่อน", en: "Click link and enter FB password to vote", score: 0 }, { th: "โทรหาเคนเพื่อเช็คว่าโดนแฮ็กไลน์หรือเปล่า ลิงก์ฟิชชิ่งชัวร์", en: "Call Ken to check if his Line got hacked. Phishing!", score: 10 }, { th: "บอกเคนว่าเดี๋ยวโหวตให้ แต่แกล้งลืม", en: "Tell Ken you will vote, but 'forget' to do it", score: 5 }]
-    },
-    { icon: "⚡", title_th: "แจ้งเตือนค่าไฟ", title_en: "Fake Utility Bill", th: "SMS เข้า: 'คุณมียอดค้างชำระค่าไฟ 3 เดือน กรุณาแอดไลน์การไฟฟ้าด่วนก่อนโดนตัดไฟ!'", en: "SMS: 'Unpaid electric bill for 3 months. Add MEA Line account urgently before power cut!'",
-      options: [{ th: "ตกใจสุดขีด รีบแอดไลน์ไปเคลียร์ยอดทันที", en: "Panicked, add Line to clear the bill instantly", score: 0 }, { th: "ลบทิ้ง! การไฟฟ้าไม่มีนโยบายส่งลิงก์ให้แอดไลน์", en: "Delete it! Electricity Authority never sends links", score: 10 }, { th: "โทรไปด่าเบอร์ที่ส่ง SMS มา", en: "Call the sender number to yell at them", score: 5 }]
-    },
-    { icon: "🦠", title_th: "ไวรัสหลอกลวง", title_en: "Scareware", th: "กำลังดูซีรีส์ฟรี จู่ๆ มีหน้าต่างเด้งแดงเถือก 'มือถือคุณติดไวรัส 13 ตัว! โหลดแอปสแกนด่วน'", en: "Watching free series, red popup appears: 'Phone infected with 13 viruses! Download scanner now!'",
-      options: [{ th: "กลัวข้อมูลหาย รีบกดโหลดแอปมาสแกนไวรัส", en: "Scared of losing data, download the app quickly", score: 0 }, { th: "ปิดแท็บนั้นทิ้งไปเลย มันคือโฆษณาหลอกลวง (Scareware)", en: "Close the tab. It's just a scareware ad.", score: 10 }, { th: "แคปจอไปถามอะตอมว่าทำยังไงดี", en: "Screenshot and ask Atom what to do", score: 5 }]
-    },
-    { icon: "💰", title_th: "แจกเงินดิจิทัล", title_en: "Fake Digital Wallet", th: "คิวส่งลิงก์ 'ลงทะเบียนรับเงินดิจิทัล 10,000 บาท' มาให้ กรอกแค่เลขบัตรปชช. เบอร์โทร ก็ได้เงินเลย", en: "Q sends link: 'Register for 10k THB digital wallet.' Just enter ID & phone number.",
-      options: [{ th: "ของฟรีต้องไว รีบกรอกข้อมูลให้ครบถ้วน", en: "Free money! Type all personal info fast", score: 0 }, { th: "เตือนคิวว่าเว็บปลอม! รอประกาศจากแอป 'ทางรัฐ' อย่างเดียว", en: "Warn Q it's fake! Wait for the official Gov app only", score: 10 }, { th: "กรอกข้อมูลปลอมๆ ชื่อลุงแถวบ้านไปกวนๆ", en: "Fill in fake info just to troll them", score: 5 }]
-    },
-    { icon: "💘", title_th: "ชวนเทรดทอง", title_en: "Pig Butchering Scam", th: "แมตช์เจอสาวสวย/หนุ่มหล่อในแอปหาคู่ คุยได้ 2 วันเขาบอก 'เราเทรดทองได้กำไรเยอะมาก โหลดแอปนี้สิเดี๋ยวพาทำ'", en: "Matched with a hottie on dating app. After 2 days: 'I make huge profits trading gold, download this app!'",
-      options: [{ th: "โหลดตามเลย อยากรวยพร้อมมีแฟนสายเปย์", en: "Download it. Want to be rich and get a date", score: 0 }, { th: "Pig Butchering Scam ชัดๆ! บล็อกแล้วรีพอร์ตทันที", en: "Pig Butchering Scam! Block and report instantly.", score: 10 }, { th: "ขอยืมเงินเขาก่อนเพื่อมาลงทุนดูความจริงใจ", en: "Ask to borrow their money to invest to test them", score: 5 }]
-    },
-    { icon: "⭐", title_th: "งานสำรองจ่าย", title_en: "Advance Payment Job", th: "แอดมินเพจทักมาให้งาน 'กดไลก์รีวิวสินค้า ได้ค่าคอม 20%' แต่ต้องโอนเงินสำรองจ่ายก่อน 500 บาท", en: "Admin messages: 'Like and review products for 20% commission', but needs 500 THB deposit first.",
-      options: [{ th: "โอนสำรองจ่ายไปก่อน หวังได้กำไรคืนง่ายๆ", en: "Transfer the deposit, expecting easy profit", score: 0 }, { th: "งานที่ต้องจ่ายเงินก่อนคืองานหลอกลวง 100% บล็อกทิ้งซะ", en: "Jobs asking for money first are 100% scams. Block.", score: 10 }, { th: "รับงานแต่พอถึงตอนให้โอนก็อ่านไม่ตอบ", en: "Accept the job but ignore them when asked to pay", score: 5 }]
-    },
-    { icon: "🎁", title_th: "หลอกเก็บค่าส่ง", title_en: "Shipping Fee Scam", th: "เพจอินฟลูฯ ชื่อดัง (แต่ผู้ติดตามหลักร้อย) ทักมาบอกว่าเราได้รางวัลกระเป๋าแบรนด์เนม ให้โอนค่าส่ง 50 บาท", en: "Famous influencer page (with 100 followers) says you won a designer bag! Pay 50 THB shipping.",
-      options: [{ th: "โอนสิ คุ้มมาก! แค่ 50 บาทแลกของหลักหมื่น", en: "Pay 50 THB for a luxury bag? Worth it!", score: 0 }, { th: "สังเกตยอดผู้ติดตาม อ้าว เพจปลอมสวมรอยนี่นา! รีพอร์ตเลย", en: "Check followers... it's a fake clone page! Report.", score: 10 }, { th: "ทักไปถามว่าหักจากค่ากระเป๋าเลยได้ไหม", en: "Ask if they can deduct shipping from the bag's value", score: 5 }]
-    },
-    { icon: "✈️", title_th: "ตั๋วทิพย์", title_en: "Fake Flight Tickets", th: "ฟิล์มชวนซื้อตั๋วเครื่องบิน 'หลุดจอง' ไปญี่ปุ่น ราคาแค่ 3,000 บาท ในทวิตเตอร์ (X) แม่ค้าเร่งให้โอน", en: "Film invites you to buy 'cancelled' flight tickets to Japan for 3k THB on X. Seller is rushing you.",
-      options: [{ th: "ถูกแบบนี้ต้องจัด โอนไวได้บินชัวร์", en: "So cheap! Transfer fast to secure the flight", score: 0 }, { th: "เตือนฟิล์มว่าตั๋วหลุดจองโอนสิทธิ์กันไม่ได้ ซื้อกับสายการบินดีกว่า", en: "Warn Film name transfers aren't allowed. Buy official.", score: 10 }, { th: "ขอทักไปขอดูบัตรประชาชนคนขายก่อน", en: "Message seller to ask for their ID card first", score: 5 }]
-    },
-    { icon: "💸", title_th: "แอปเงินกู้เถื่อน", title_en: "Illegal Loan App", th: "หมุนเงินไม่ทัน เจอแอปเงินกู้อนุมัติไว ไม่เช็คเครดิตบูโร แค่ต้องกด 'อนุญาตให้เข้าถึงรายชื่อผู้ติดต่อ' ในมือถือ", en: "Need cash fast. Found an instant loan app, no credit check, just needs 'Access to Contacts'.",
-      options: [{ th: "กดอนุญาตไปเลย อยากได้เงินด่วน", en: "Allow access immediately, need the money!", score: 0 }, { th: "หยุดเลย! แอปเถื่อนแน่ๆ เดี๋ยวโดนดูดข้อมูลไปโทรทวงประจาน", en: "Stop! Illegal app will steal contacts to harass them.", score: 10 }, { th: "โหลดแอปมาดูเฉยๆ แต่ยังไม่กดยืนยัน", en: "Download just to see, but don't confirm anything", score: 5 }]
+    { icon: "🪩", title_th: "มัลแวร์เรียกค่าไถ่ (Ransomware)", title_en: "Threat 10: Ransomware", 
+      th: "เปิดคอมมาเจอหน้าจอแดงเถือก ไฟล์รูปและงานโดนล็อกรหัสผ่านทั้งหมด พร้อมข้อความขู่ให้จ่าย Bitcoin เพื่อปลดล็อก!", 
+      en: "Screen turns red, all files are encrypted. Demands Bitcoin to unlock your data!",
+      options: [{ th: "ยอมโอน Bitcoin จ่ายค่าไถ่ หวังว่าจะได้ไฟล์คืน", en: "Pay the ransom and hope they unlock it", score: 0 }, 
+                { th: "ตัดการเชื่อมต่ออินเทอร์เน็ตทันที! แล้วล้างเครื่องดึงไฟล์จาก Backup", en: "Disconnect from network instantly! Format and restore backup.", score: 10 }, 
+                { th: "ค้นหา Google หาวิธีถอดรหัสผ่านด้วยตัวเอง", en: "Search Google for decryption tools", score: 5 }]
     }
 ];
 
@@ -214,7 +211,7 @@ let currentLevel = 1;
 const MAX_LEVEL = 10; 
 let totalScore = 0;
 let isSpinning = false;
-let lives = 4; // จำนวนหัวใจเริ่มต้น
+let lives = 4;
 let totalSeconds = 0;
 let totalTimer;
 let isTransitioning = false; 
@@ -222,20 +219,11 @@ let currentFeedbackType = null;
 let currentFeedbackIndex = 0;   
 let gameEndTime = null; 
 
-// 🌟 ตัวแปรจับเวลาแบบความแม่นยำสูง
 let questionTimer;
 let endTime = 0;
-const TIME_LIMIT_MS = 15000; // 15 วินาที
+const TIME_LIMIT_MS = 15000; 
 let isTimeOut = false; 
 let currentDisplaySeconds = 15; 
-
-function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
 
 // === 4. CORE LOGIC ===
 function showScreen(id) {
@@ -315,14 +303,14 @@ function updateLanguageUI() {
     const rd = document.getElementById('final-rank-desc');
     if (rank && rd) {
         if (rate >= 80) {
-            rank.innerText = currentLang === 'th' ? "👑 มิจจี้ทำอะไรไม่ได้" : "👑 Scammers is crying";
-            rd.innerText = currentLang === 'th' ? "มิจจี้ยังต้องเรียกพี่! เหลี่ยมมาเหลี่ยมกลับไม่โกง" : "Scammers bow to you!";
+            rank.innerText = currentLang === 'th' ? "👑 ระดับพระกาฬ" : "👑 Master";
+            rd.innerText = currentLang === 'th' ? "ไวรัสยังต้องร้องไห้! ระบบปลอดภัยขั้นสุด" : "Malware bows to you!";
         } else if (rate >= 50) {
-            rank.innerText = currentLang === 'th' ? "🛡️ คนจริงเอาตัวรอดเก่ง" : "🛡️ Good head";
-            rd.innerText = currentLang === 'th' ? "สติดีใช้ได้ รอดตัวไปนะรอบนี้" : "Great survival skills.";
+            rank.innerText = currentLang === 'th' ? "🛡️ ระดับผู้เชี่ยวชาญ" : "🛡️ Expert";
+            rd.innerText = currentLang === 'th' ? "รอดตัวไปได้! แต่ต้องระวังให้มากกว่านี้" : "Great survival skills.";
         } else {
-            rank.innerText = currentLang === 'th' ? "💸 หมูแห้ง" : "💸 Skinny pig";
-            rd.innerText = currentLang === 'th' ? "ระวังหน่อยนะ เป็นเหยื่อชั้นดีของพวกมิจจี้เลย" : "Be careful! You're an easy target.";
+            rank.innerText = currentLang === 'th' ? "💸 ระบบพังพินาศ" : "💸 Crashed";
+            rd.innerText = currentLang === 'th' ? "ต้องกลับไปศึกษาเรื่อง Cybersecurity ด่วนเลย" : "Your system is compromised!";
         }
     }
 
@@ -348,13 +336,12 @@ function updateLanguageUI() {
     }
 
     const stepTitle = document.getElementById('step-title');
-    const stepIcon = document.getElementById('step-icon');
     const stepDesc = document.getElementById('step-desc'); 
 
-    if (stepTitle && stepIcon && stepTitle.innerText !== "") {
-        if (stepIcon.innerText === "✨") {
+    if (stepTitle && stepTitle.innerText !== "") {
+        if (currentFeedbackType === 'correct') {
             stepTitle.innerText = currentLang === 'th' ? "ถูกต้อง!" : "Correct!";
-        } else if (stepIcon.innerText === "❌") {
+        } else if (currentFeedbackType === 'wrong') {
             if (isTimeOut) {
                 stepTitle.innerText = currentLang === 'th' ? "หมดเวลา!" : "Time's Up!";
             } else {
@@ -397,7 +384,9 @@ function btnStartClick() {
     playSound('click'); 
     
     startTotalTimer(); 
-    shuffleArray(scenarios);
+    
+    // เอาสุ่มออกเพื่อให้เล่น 1-10 ตามลำดับ
+    // shuffleArray(scenarios);
 
     bounceThenTransition(() => {
         showScreen('screen-gacha');
@@ -406,20 +395,20 @@ function btnStartClick() {
 }
 
 function updateLivesUI() {
-    // อัปเดตตัวเลขหัวใจที่แสดงบนหน้าจอให้ตรงกับที่เหลือ
     const livesEl = document.getElementById('lives');
     if(livesEl) livesEl.innerText = lives;
 }
 
+// 🌟 เปลี่ยนภาพกลับมาเป็นเสก Emoji เบิ้มๆ ในสล็อต 🌟
 function initSlot() {
     const reel = document.getElementById('reel1');
     if(reel) {
         reel.innerHTML = `
             <div class="reel-item">
                 <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                    <span style="font-size: 2.5rem;">❓</span>
-                    <span class="slot-text" data-th="กดสุ่มเลย!" data-en="Spin Now!" style="line-height: 1.3; font-size: 1.2rem; font-weight: bold; color: var(--text-color);">
-                        ${currentLang === 'th' ? "กดสุ่มเลย!" : "Spin Now!"}
+                    <span style="font-size: 4rem;">❓</span>
+                    <span class="slot-text" data-th="กดสแกนเลย!" data-en="Scan Now!" style="line-height: 1.3; font-size: 1.2rem; font-weight: bold; color: var(--text-color);">
+                        ${currentLang === 'th' ? "กดสแกนเลย!" : "Scan Now!"}
                     </span>
                 </div>
             </div>
@@ -427,6 +416,7 @@ function initSlot() {
     }
 }
 
+// 🌟 ตอนสล็อตหมุนก็ใช้ Emoji 🌟
 function btnSpinClick() {
     if (isSpinning) return;
     isSpinning = true;
@@ -499,16 +489,22 @@ function updateTimerUI(timeLeftMs) {
     }
 }
 
+// 🌟 ดึง Emoji ขึ้นหัวข้อคำถามแบบไซส์บึ้มๆ (4rem) 🌟
 function loadQuestion() {
     const q = scenarios[(currentLevel - 1) % scenarios.length];
-    document.getElementById('sit-icon').innerText = q.icon;
+    
+    const iconContainer = document.getElementById('sit-icon');
+    iconContainer.innerHTML = `<span style="font-size: 4rem;">${q.icon}</span>`;
     document.getElementById('sit-desc').innerText = q[currentLang];
     
     const optionsDiv = document.getElementById('options');
     optionsDiv.innerHTML = '';
     
     let opts = [...q.options];
-    shuffleArray(opts); 
+    for (let i = opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+    }
     
     opts.forEach(opt => {
         const btn = document.createElement('button');
@@ -535,7 +531,7 @@ function startQuestionTimer() {
         if (timeLeft <= 0) {
             updateTimerUI(0);
             isTimeOut = true;
-            handleAnswer(-1); // ส่งค่า -1 ไปแปลว่าหมดเวลา
+            handleAnswer(-1); 
             return;
         }
         
@@ -546,33 +542,30 @@ function startQuestionTimer() {
     questionTimer = requestAnimationFrame(update);
 }
 
+// 🌟 ตอนเฉลยก็ใช้ Emoji 6rem ไปเลย 🌟
 function handleAnswer(score) {
     if (questionTimer) cancelAnimationFrame(questionTimer);
     
+    const stepIconContainer = document.getElementById('step-icon');
     let earned = 0;
     
-    // ถ้าตอบถูก (คะแนน=10)
     if (score === 10) {
         earned = 10;
         playSound('correct');
         currentFeedbackType = 'correct';
-        document.getElementById('step-icon').innerText = "✨";
+        stepIconContainer.innerHTML = `<span style="font-size: 6rem;">✨</span>`;
     } 
-    // ถ้าตอบผิด หรือ หมดเวลา (-1)
     else {
         playSound('wrong');
         currentFeedbackType = 'wrong';
-        document.getElementById('step-icon').innerText = "❌";
+        stepIconContainer.innerHTML = `<span style="font-size: 6rem;">❌</span>`;
         
-        // 💔 ตอบผิด ลดหัวใจไป 1 ดวง!
         lives--;
         updateLivesUI();
     }
     
-    // อัปเดตคะแนนสะสม
     totalScore += earned;
     
-    // 🌟 อัปเดตตัวเลขคะแนนที่มุมจอทันทีให้เห็นเรียลไทม์
     const scoreEl = document.getElementById('score'); 
     if(scoreEl) scoreEl.innerText = totalScore;
     
@@ -586,7 +579,6 @@ function handleAnswer(score) {
 
 function btnNextStepClick() {
     playSound('click');
-    // 💀 เช็คว่าถึงข้อสุดท้ายแล้ว หรือ "หัวใจหมด" ให้เด้งไปจบเกมทันที
     if (currentLevel >= MAX_LEVEL || lives <= 0) {
         bounceThenTransition(() => {
             endGame();
@@ -594,6 +586,9 @@ function btnNextStepClick() {
     } else {
         currentLevel++;
         updateProgress();
+        
+        updateLanguageUI(); 
+        
         bounceThenTransition(() => {
             showScreen('screen-gacha');
             initSlot();
@@ -608,7 +603,7 @@ function updateProgress() {
     if (progressFill && tProgress) {
         const percent = ((currentLevel - 1) / MAX_LEVEL) * 100;
         progressFill.style.width = percent + '%';
-        tProgress.innerText = (currentLang === 'th' ? 'ด่านที่ ' : 'Level ') + currentLevel + '/' + MAX_LEVEL;
+        tProgress.innerText = (currentLang === 'th' ? 'ข้อที่ ' : 'Level ') + currentLevel + '/' + MAX_LEVEL;
     }
 }
 
@@ -617,7 +612,7 @@ function endGame() {
     gameEndTime = new Date();
     
     const rate = Math.round((totalScore / (MAX_LEVEL * 10)) * 100);
-    const isWin = rate >= 50 && lives > 0; // ต้องได้คะแนนเกินครึ่ง และหัวใจห้ามเป็น 0 ถึงจะชนะ
+    const isWin = rate >= 50 && lives > 0; 
     
     playSound(isWin ? 'firework' : 'fail');
     
@@ -632,26 +627,27 @@ function endGame() {
     showScreen('screen-game-over');
     
     if (isWin) triggerConfetti();
+
+    document.querySelector('.progress-container').style.display = 'none';
 }
 
 function btnRestartClick() {
     playSound('click');
-    
-    // รีเซ็ตค่าทุกอย่างตอนกดเล่นใหม่
     currentLevel = 1;
     totalScore = 0;
     totalSeconds = 0;
-    lives = 4; // ❤️ คืนชีพให้ 4 ดวงใหม่
+    lives = 4; 
     isSpinning = false;
     gameEndTime = null;
     
     updateProgress();
     updateLivesUI();
     
-    // เคลียร์คะแนนบนหน้าจอให้กลับเป็น 0
     const scoreEl = document.getElementById('score');
     if(scoreEl) scoreEl.innerText = totalScore;
     
+    updateLanguageUI();
+
     bounceThenTransition(() => {
         showScreen('screen-main');
     });
@@ -692,14 +688,11 @@ function saveAsImage() {
     });
 }
 
-// โหลดหน้าเว็บครั้งแรกให้ดึงคะแนนและหัวใจตั้งต้นมาแสดงเลย
 window.onload = () => {
     updateLanguageUI();
     updateProgress();
-    
     updateLivesUI();
     const scoreEl = document.getElementById('score');
     if(scoreEl) scoreEl.innerText = totalScore;
-    
     initSlot();
 };
