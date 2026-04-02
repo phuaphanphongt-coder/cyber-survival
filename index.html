@@ -6,7 +6,7 @@
     <title>Cyber Survivor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Kanit:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Sriracha&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -38,8 +38,7 @@
             </div>
 
             <div id="screen-main" class="screen">
-                <div class="sit-icon" style="font-size: 4rem; margin-bottom: 10px;">🛡️</div>
-                <p id="t-welcome" style="font-size: 1.2rem; color: #5D5651; text-align: center; margin-bottom: 20px;">พร้อมจะทดสอบสัญชาตญาณเอาตัวรอดในโลกออนไลน์ของคุณหรือยัง?</p>
+                <p id="t-welcome" style="font-size: 1.2rem; color: #5D5651; text-align: center; margin-bottom: 20px;">พร้อมที่จะฝ่าด่าน 10 การโดนแฮ็คด้วยมัลแวร์หรือยัง?</p>
                 <button class="btn-primary" onclick="btnStartClick()" id="btn-start">เริ่มเกมเลย!</button>
             </div>
 
@@ -49,7 +48,7 @@
                         <div class="reel" id="reel1"></div>
                     </div>
                 </div>
-                <button class="btn-primary" id="btn-spin" onclick="btnSpinClick()">🎲 สุ่มด่าน</button>
+                <button class="btn-primary" id="btn-spin" onclick="btnSpinClick()">🎲 สุ่มข้อ</button>
             </div>
 
             <div id="screen-quiz" class="screen" style="display: none; flex-direction: column; width: 100%;">
@@ -101,7 +100,7 @@
             </div>  
 
             <div class="progress-container">
-                <div id="t-progress" style="text-align:center; font-weight:bold; margin-bottom:5px;">ด่านที่ 1/10</div>
+                <div id="t-progress" style="text-align:center; font-weight:bold; margin-bottom:5px;">ข้อที่ 1/10</div>
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                 </div>
