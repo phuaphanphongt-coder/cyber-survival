@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Sriracha&display=swap');
 
 :root {
     --bg-color: #F8F1E9;
@@ -10,7 +10,7 @@
 
 * { 
     box-sizing: border-box; 
-    font-family: 'Itim', cursive; 
+    font-family: 'Rubik', 'Sriracha', sans-serif; 
     transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s; 
 }
 
